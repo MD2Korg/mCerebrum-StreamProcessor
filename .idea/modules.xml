@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../mCerebrum-DataKitAPI/datakitapi/datakitapi.iml" filepath="$PROJECT_DIR$/../mCerebrum-DataKitAPI/datakitapi/datakitapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mCerebrum-StreamProcessor.iml" filepath="$PROJECT_DIR$/mCerebrum-StreamProcessor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../stream-processor/stream-processor.iml" filepath="$PROJECT_DIR$/../stream-processor/stream-processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/streamprocessor/streamprocessor.iml" filepath="$PROJECT_DIR$/streamprocessor/streamprocessor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mCerebrum-Utilities/utilities/utilities.iml" filepath="$PROJECT_DIR$/../mCerebrum-Utilities/utilities/utilities.iml" />
+    </modules>
+  </component>
+</project>
