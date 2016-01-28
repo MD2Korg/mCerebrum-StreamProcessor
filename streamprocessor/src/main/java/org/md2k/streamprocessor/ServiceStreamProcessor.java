@@ -1,18 +1,29 @@
 package org.md2k.streamprocessor;
 
-import android.app.AlertDialog;
 import android.app.Service;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.IBinder;
-import android.view.WindowManager;
 import android.widget.Toast;
 
+import org.md2k.datakitapi.DataKitAPI;
+import org.md2k.datakitapi.datatype.DataType;
+import org.md2k.datakitapi.datatype.DataTypeInt;
 import org.md2k.datakitapi.messagehandler.OnConnectionListener;
-import org.md2k.phonesensor.phone.sensors.PhoneSensorDataSources;
+import org.md2k.datakitapi.messagehandler.OnExceptionListener;
+import org.md2k.datakitapi.messagehandler.OnReceiveListener;
+import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
+import org.md2k.datakitapi.source.datasource.DataSourceClient;
+import org.md2k.datakitapi.source.datasource.DataSourceType;
+import org.md2k.datakitapi.source.platform.Platform;
+import org.md2k.datakitapi.source.platform.PlatformBuilder;
+import org.md2k.datakitapi.source.platform.PlatformType;
+import org.md2k.datakitapi.status.Status;
 import org.md2k.utilities.Report.Log;
-import org.md2k.utilities.datakit.DataKitHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import md2k.mCerebrum.CSVDataPoint;
 
 /**
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -43,55 +54,44 @@ import org.md2k.utilities.datakit.DataKitHandler;
 
 public class ServiceStreamProcessor extends Service {
     private static final String TAG = ServiceStreamProcessor.class.getSimpleName();
-    DataKitHandler dataKitHandler;
+    DataKitAPI dataKitAPI;
+    DataKitManager dataKitManager;
 
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate()");
-        if (!connectDataKit()) {
-            showAlertDialogDataKit(this);
-            stopSelf();
-        } else
-            Toast.makeText(getApplicationContext(), "PhoneSensor Service started Successfully", Toast.LENGTH_LONG).show();
-    }
-    void showAlertDialogDataKit(final Context context){
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("Error: DataKit")
-                .setIcon(R.drawable.ic_error_red_50dp)
-                .setMessage("DataKit is not installed.\n\n Please install DataKit")
-                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .create();
-
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.show();
+        connectDataKit();
     }
 
-    private boolean connectDataKit() {
+    private void connectDataKit() {
         Log.d(TAG, "connectDataKit()...");
-        DataKitHandler.getInstance(getApplicationContext()).close();
-        dataKitHandler = DataKitHandler.getInstance(getApplicationContext());
-        return dataKitHandler.connect(new OnConnectionListener() {
+        DataKitAPI.getInstance(getApplicationContext()).close();
+        dataKitAPI = DataKitAPI.getInstance(getApplicationContext());
+        dataKitAPI.connect(new OnConnectionListener() {
             @Override
             public void onConnected() {
                 Log.d(TAG, "onConnected()...");
-                phoneSensorDataSources.register();
+                dataKitManager=new DataKitManager(ServiceStreamProcessor.this);
+                dataKitManager.start();
+            }
+        }, new OnExceptionListener() {
+            @Override
+            public void onException(Status status) {
+                if(dataKitManager.isActive())
+                    dataKitManager.stop();
+                Toast.makeText(ServiceStreamProcessor.this, "StreamProcessor Stopped. Error: " + status.getStatusMessage(), Toast.LENGTH_LONG).show();
+                stopSelf();
             }
         });
     }
 
     @Override
     public void onDestroy() {
-        if (phoneSensorDataSources != null) {
-            phoneSensorDataSources.unregister();
-            phoneSensorDataSources = null;
-        }
-        if (dataKitHandler != null && dataKitHandler.isConnected()) dataKitHandler.disconnect();
-        if (dataKitHandler != null)
-            dataKitHandler.close();
+        if(dataKitManager.isActive())
+            dataKitManager.stop();
+        if (dataKitAPI != null && dataKitAPI.isConnected()) dataKitAPI.disconnect();
+        if (dataKitAPI != null)
+            dataKitAPI.close();
         super.onDestroy();
     }
 
