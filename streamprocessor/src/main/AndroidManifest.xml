@@ -13,6 +13,7 @@
         tools:replace="android:theme">
         <activity
             android:name=".ActivityMain"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +30,7 @@
             android:name=".ActivityStreamProcessorSettings"
             android:enabled="true"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:label="Settings: StreamProcessor">
             <intent-filter>
                 <action android:name="org.md2k.streamprocessor.ActivityStreamProcessorSettings" />

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">StreamProcessor</string>
+    <string name="app_description">This software measures the stress level from respiration and ECG and  push to DataKit</string>
+    <string name="version">""</string>
+    <string name="url_release">https://github.com/MD2Korg/mCerebrum-StreamProcessor/releases</string>
+    <string name="url_sourcecode">https://github.com/MD2Korg/mCerebrum-StreamProcessor</string>
 </resources>

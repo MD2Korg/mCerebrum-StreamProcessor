@@ -48,6 +48,7 @@ public class StreamProcessorWrapper {
 
     public StreamProcessorWrapper(final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
+        streamProcessor.loadModel(Constants.FILEPATH_MODEL);
         this.onReceiveListener=onReceiveListener;
 
         streamProcessor.dpInterface = new DataPointInterface() {
@@ -67,8 +68,6 @@ public class StreamProcessorWrapper {
                 System.out.println(stream + " " + dp);
             }
         };
-//        streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY);
-//        streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL);
     }
 
     void addDataPoint(CSVDataPoint ap) {

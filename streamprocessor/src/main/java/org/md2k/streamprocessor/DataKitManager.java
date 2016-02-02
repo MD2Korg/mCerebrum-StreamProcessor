@@ -54,6 +54,7 @@ public class DataKitManager {
     HashMap<String,Integer> dataSourceTypeTOChannel;
     boolean active;
     HashMap<String,Output> outputHashMap;
+
     void createDataSourceTypeTOChannel(){
         dataSourceTypeTOChannel=new HashMap<>();
         dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION,7);
@@ -62,6 +63,7 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y,2);
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
     }
+
     DataKitManager(Context context){
         this.context=context;
         dataKitAPI=DataKitAPI.getInstance(context);
@@ -91,7 +93,6 @@ public class DataKitManager {
     }
     void stop(){
         active=false;
-
     }
     public void addListener(String dataSourceType){
         Output output;

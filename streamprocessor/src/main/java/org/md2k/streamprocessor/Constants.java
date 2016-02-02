@@ -32,4 +32,5 @@ import java.io.File;
  */
 public class Constants {
     public static final String SERVICE_NAME = "org.md2k.streamprocessor.ServiceStreamProcessor";
+    public static final String FILEPATH_MODEL = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.streamprocessor/model.json";
 }
