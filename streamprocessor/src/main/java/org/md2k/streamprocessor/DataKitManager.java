@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
+import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 import org.md2k.datakitapi.datatype.DataTypeInt;
 import org.md2k.datakitapi.messagehandler.OnReceiveListener;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
@@ -114,8 +115,8 @@ public class DataKitManager {
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeInt dataTypeInt=(DataTypeInt) dataType;
-                CSVDataPoint csvDataPoint=new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType),dataTypeInt.getDateTime(),dataTypeInt.getSample());
+                DataTypeDoubleArray dataTypeDoubleArray=(DataTypeDoubleArray) dataType;
+                CSVDataPoint csvDataPoint=new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType),dataTypeDoubleArray.getDateTime(),dataTypeDoubleArray.getSample()[0]);
                 streamProcessorWrapper.addDataPoint(csvDataPoint);
             }
         });
