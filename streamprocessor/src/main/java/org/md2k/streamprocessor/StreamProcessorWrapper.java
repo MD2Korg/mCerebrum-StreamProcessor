@@ -2,7 +2,6 @@ package org.md2k.streamprocessor;
 
 import android.util.Log;
 
-
 import org.md2k.datakitapi.datatype.DataTypeDouble;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 
@@ -56,6 +55,7 @@ public class StreamProcessorWrapper {
             public void dataPointHandler(String stream, DataPoint dp) {
                 DataTypeDouble dataTypeDouble=new DataTypeDouble(dp.timestamp,dp.value);
                 onReceiveListener.onReceived(stream, dataTypeDouble);
+                Log.d("Stream Processor", stream + " : " + dp.toString());
             }
 
             @Override
@@ -64,8 +64,8 @@ public class StreamProcessorWrapper {
                 for(int i=0;i<dp.value.size();i++)
                     value[i]=dp.value.get(i);
                 DataTypeDoubleArray dataTypeDoubleArray=new DataTypeDoubleArray(dp.timestamp,value);
-                onReceiveListener.onReceived(stream,dataTypeDoubleArray);
-                System.out.println(stream + " " + dp);
+                onReceiveListener.onReceived(stream, dataTypeDoubleArray);
+                Log.d("Stream Processor", stream + " : " + dp.toString());
             }
         };
     }
@@ -81,9 +81,7 @@ public class StreamProcessorWrapper {
             streamProcessor.go();
             long endtime = System.currentTimeMillis();
             Log.d(TAG, "Loop iteration in seconds: " + (endtime - starttime) / 1000.0);
-
-            System.out.println("Loop iteration in seconds: " + (endtime - starttime) / 1000.0);
-            windowStartTime = Time.nextEpochTimestamp(dp.timestamp, windowSize);
+            windowStartTime += windowSize;
         }
     }
 }
