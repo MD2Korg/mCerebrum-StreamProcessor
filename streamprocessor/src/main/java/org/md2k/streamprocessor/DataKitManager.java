@@ -5,7 +5,6 @@ import android.content.Context;
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
-import org.md2k.datakitapi.datatype.DataTypeInt;
 import org.md2k.datakitapi.messagehandler.OnReceiveListener;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
@@ -13,8 +12,10 @@ import org.md2k.datakitapi.source.datasource.DataSourceType;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
 import org.md2k.datakitapi.source.platform.PlatformType;
 import org.md2k.streamprocessor.output.Output;
+import org.md2k.streamprocessor.output.StressActivity;
 import org.md2k.streamprocessor.output.StressLabel;
 import org.md2k.streamprocessor.output.StressProbability;
+import org.md2k.utilities.Report.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,21 +23,22 @@ import java.util.HashMap;
 import md2k.mCerebrum.CSVDataPoint;
 import md2k.mCerebrum.cStress.StreamConstants;
 
-/**
+/*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
+ * - Timothy Hnat <twhnat@memphis.edu>
  * All rights reserved.
- * <p/>
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * <p/>
+ *
  * * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer.
- * <p/>
+ *
  * * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * <p/>
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -56,6 +58,20 @@ public class DataKitManager {
     boolean active;
     HashMap<String,Output> outputHashMap;
 
+    DataKitManager(Context context) {
+        this.context = context;
+        dataKitAPI = DataKitAPI.getInstance(context);
+        createDataSourceTypeTOChannel();
+        streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
+            @Override
+            public void onReceived(String s, DataType value) {
+                outputHashMap.get(s).insert(value);
+                Log.d("Stream Processor", s + " : " + value.toString());
+            }
+        });
+        active = false;
+    }
+
     void createDataSourceTypeTOChannel(){
         dataSourceTypeTOChannel=new HashMap<>();
         dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION,7);
@@ -65,18 +81,6 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
     }
 
-    DataKitManager(Context context){
-        this.context=context;
-        dataKitAPI=DataKitAPI.getInstance(context);
-        createDataSourceTypeTOChannel();
-        streamProcessorWrapper=new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
-            @Override
-            public void onReceived(String s, DataType value) {
-                outputHashMap.get(s).insert(value);
-            }
-        });
-        active=false;
-    }
     void start(){
         outputHashMap=new HashMap<>();
         active=true;
@@ -88,6 +92,7 @@ public class DataKitManager {
 
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
+        addListener(DataSourceType.STRESS_ACTIVITY);
     }
     public boolean isActive(){
         return active;
@@ -101,13 +106,23 @@ public class DataKitManager {
             case DataSourceType.STRESS_PROBABILITY:
                 output=new StressProbability(context);
                 output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY);
-
                 break;
+
             case DataSourceType.STRESS_LABEL:
                 output=new StressLabel(context);
                 output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL);
+                break;
+
+            case DataSourceType.STRESS_ACTIVITY:
+                output = new StressActivity(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_ACTIVITY, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_ACTIVITY);
+                break;
         }
     }
     public void subscribe(String platformType,final String dataSourceType){
