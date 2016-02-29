@@ -11,10 +11,14 @@ import org.md2k.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.datakitapi.source.datasource.DataSourceType;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
 import org.md2k.datakitapi.source.platform.PlatformType;
+import org.md2k.streamprocessor.output.ECGQuality;
 import org.md2k.streamprocessor.output.Output;
+import org.md2k.streamprocessor.output.RIPQuality;
 import org.md2k.streamprocessor.output.StressActivity;
+import org.md2k.streamprocessor.output.StressEpisode;
 import org.md2k.streamprocessor.output.StressLabel;
 import org.md2k.streamprocessor.output.StressProbability;
+import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.utilities.Report.Log;
 
 import java.util.ArrayList;
@@ -123,6 +127,35 @@ public class DataKitManager {
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_ACTIVITY, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_ACTIVITY);
                 break;
+
+            case DataSourceType.CSTRESS_FEATURE_VECTOR:
+                output = new cStressFeatureVector(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_FV, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_CSTRESS_FV);
+                break;
+
+            case DataSourceType.ORG_MD2K_CSTRESS_DATA_RIP_QUALITY:
+                output = new RIPQuality(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_DATA_RIP_QUALITY, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_DATA_RIP_QUALITY);
+                break;
+
+            case DataSourceType.ORG_MD2K_CSTRESS_DATA_ECG_QUALITY:
+                output = new ECGQuality(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_DATA_ECG_QUALITY, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_DATA_ECG_QUALITY);
+                break;
+
+            case DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION:
+                output = new StressEpisode(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION);
+                break;
+
         }
     }
     public void subscribe(String platformType,final String dataSourceType){
