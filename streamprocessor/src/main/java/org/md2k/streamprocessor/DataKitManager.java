@@ -97,6 +97,10 @@ public class DataKitManager {
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
         addListener(DataSourceType.STRESS_ACTIVITY);
+        addListener(DataSourceType.CSTRESS_FEATURE_VECTOR);
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_DATA_ECG_QUALITY);
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_DATA_RIP_QUALITY);
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION);
     }
     public boolean isActive(){
         return active;
