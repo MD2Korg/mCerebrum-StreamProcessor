@@ -48,7 +48,8 @@ public class ActivityStreamProcessorSettings extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }

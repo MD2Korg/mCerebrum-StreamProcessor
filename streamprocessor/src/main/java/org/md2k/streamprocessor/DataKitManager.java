@@ -55,12 +55,12 @@ import md2k.mCerebrum.cStress.StreamConstants;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class DataKitManager {
-    Context context;
-    DataKitAPI dataKitAPI;
-    StreamProcessorWrapper streamProcessorWrapper;
-    HashMap<String,Integer> dataSourceTypeTOChannel;
-    boolean active;
-    HashMap<String,Output> outputHashMap;
+    protected Context context;
+    protected DataKitAPI dataKitAPI;
+    protected StreamProcessorWrapper streamProcessorWrapper;
+    protected HashMap<String, Integer> dataSourceTypeTOChannel;
+    protected boolean active;
+    protected HashMap<String, Output> outputHashMap;
 
     DataKitManager(Context context) {
         this.context = context;
@@ -76,7 +76,7 @@ public class DataKitManager {
         active = false;
     }
 
-    void createDataSourceTypeTOChannel(){
+    protected void createDataSourceTypeTOChannel() {
         dataSourceTypeTOChannel=new HashMap<>();
         dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION,7);
         dataSourceTypeTOChannel.put(DataSourceType.ECG,0);
@@ -85,7 +85,7 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
     }
 
-    void start(){
+    protected void start() {
         outputHashMap=new HashMap<>();
         active=true;
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.RESPIRATION);
@@ -105,7 +105,8 @@ public class DataKitManager {
     public boolean isActive(){
         return active;
     }
-    void stop(){
+
+    protected void stop() {
         active=false;
     }
     public void addListener(String dataSourceType){
@@ -160,6 +161,8 @@ public class DataKitManager {
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION);
                 break;
 
+            default:
+                break;
         }
     }
     public void subscribe(String platformType,final String dataSourceType){
@@ -175,7 +178,7 @@ public class DataKitManager {
 
     }
 
-    DataSourceClient findDataSourceClient(String platformType,String dataSourceType){
+    protected DataSourceClient findDataSourceClient(String platformType, String dataSourceType) {
         PlatformBuilder platformBuilder=new PlatformBuilder().setType(platformType);
         DataSourceBuilder dataSourceBuilder=new DataSourceBuilder();
         dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());

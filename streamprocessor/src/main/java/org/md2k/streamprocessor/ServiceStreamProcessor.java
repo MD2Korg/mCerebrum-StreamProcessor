@@ -6,40 +6,26 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import org.md2k.datakitapi.DataKitAPI;
-import org.md2k.datakitapi.datatype.DataType;
-import org.md2k.datakitapi.datatype.DataTypeInt;
 import org.md2k.datakitapi.messagehandler.OnConnectionListener;
 import org.md2k.datakitapi.messagehandler.OnExceptionListener;
-import org.md2k.datakitapi.messagehandler.OnReceiveListener;
-import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
-import org.md2k.datakitapi.source.datasource.DataSourceClient;
-import org.md2k.datakitapi.source.datasource.DataSourceType;
-import org.md2k.datakitapi.source.platform.Platform;
-import org.md2k.datakitapi.source.platform.PlatformBuilder;
-import org.md2k.datakitapi.source.platform.PlatformType;
 import org.md2k.datakitapi.status.Status;
 import org.md2k.utilities.Report.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import md2k.mCerebrum.CSVDataPoint;
-
-/**
+/*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
  * All rights reserved.
- * <p/>
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * <p/>
+ *
  * * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer.
- * <p/>
+ *
  * * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * <p/>
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -54,8 +40,8 @@ import md2k.mCerebrum.CSVDataPoint;
 
 public class ServiceStreamProcessor extends Service {
     private static final String TAG = ServiceStreamProcessor.class.getSimpleName();
-    DataKitAPI dataKitAPI;
-    DataKitManager dataKitManager;
+    protected DataKitAPI dataKitAPI;
+    protected DataKitManager dataKitManager;
 
     public void onCreate() {
         super.onCreate();

@@ -12,21 +12,21 @@ import md2k.mCerebrum.cStress.library.datastream.DataPointInterface;
 import md2k.mCerebrum.cStress.library.structs.DataPoint;
 import md2k.mCerebrum.cStress.library.structs.DataPointArray;
 
-/**
+/*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
  * All rights reserved.
- * <p/>
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * <p/>
+ *
  * * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer.
- * <p/>
+ *
  * * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * <p/>
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -40,10 +40,10 @@ import md2k.mCerebrum.cStress.library.structs.DataPointArray;
  */
 public class StreamProcessorWrapper {
     private static final String TAG = StreamProcessorWrapper.class.getSimpleName();
-    StreamProcessor streamProcessor;
-    int windowSize = 60000;
-    long windowStartTime = -1;
-    OnReceiveListener onReceiveListener;
+    protected StreamProcessor streamProcessor;
+    protected int windowSize = 60000;
+    protected long windowStartTime = -1;
+    protected OnReceiveListener onReceiveListener;
 
     public StreamProcessorWrapper(final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
@@ -70,7 +70,7 @@ public class StreamProcessorWrapper {
         };
     }
 
-    void addDataPoint(CSVDataPoint ap) {
+    protected void addDataPoint(CSVDataPoint ap) {
         DataPoint dp = new DataPoint(ap.timestamp, ap.value);
         streamProcessor.add(ap.channel, dp);
         if (windowStartTime < 0)
