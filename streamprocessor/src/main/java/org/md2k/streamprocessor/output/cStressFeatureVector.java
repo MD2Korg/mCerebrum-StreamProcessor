@@ -47,7 +47,7 @@ public class cStressFeatureVector extends Output {
         HashMap<String, String> dataDescriptor;
         // (1)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval_Variance");
+        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "variance");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -92,7 +92,7 @@ public class cStressFeatureVector extends Output {
 
         // (6)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval_Mean");
+        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -102,7 +102,7 @@ public class cStressFeatureVector extends Output {
 
         // (7)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval_Median");
+        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -112,7 +112,7 @@ public class cStressFeatureVector extends Output {
 
         // (8)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -122,7 +122,7 @@ public class cStressFeatureVector extends Output {
 
         // (9)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -132,7 +132,7 @@ public class cStressFeatureVector extends Output {
 
         // (10)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval_20thPercentile");
+        dataDescriptor.put(METADATA.NAME, "ECG_RR_Interval");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "20th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -170,7 +170,7 @@ public class cStressFeatureVector extends Output {
 
         // (14)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -180,7 +180,7 @@ public class cStressFeatureVector extends Output {
 
         // (15)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration_Mean");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -190,7 +190,7 @@ public class cStressFeatureVector extends Output {
 
         // (16)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration_Median");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -200,7 +200,7 @@ public class cStressFeatureVector extends Output {
 
         // (17)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -211,7 +211,7 @@ public class cStressFeatureVector extends Output {
 
         // (18)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -221,7 +221,7 @@ public class cStressFeatureVector extends Output {
 
         // (19)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration_Mean");
+        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -231,7 +231,7 @@ public class cStressFeatureVector extends Output {
 
         // (20)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration_Median");
+        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -241,7 +241,7 @@ public class cStressFeatureVector extends Output {
 
         // (21)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "RIP_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -252,7 +252,7 @@ public class cStressFeatureVector extends Output {
 
         // (22)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -262,7 +262,7 @@ public class cStressFeatureVector extends Output {
 
         // (23)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration_Mean");
+        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -272,7 +272,7 @@ public class cStressFeatureVector extends Output {
 
         // (24)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration_Median");
+        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -282,7 +282,7 @@ public class cStressFeatureVector extends Output {
 
         // (25)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "RIP_Respiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -293,7 +293,7 @@ public class cStressFeatureVector extends Output {
 
         // (26)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -303,7 +303,7 @@ public class cStressFeatureVector extends Output {
 
         // (27)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration_Mean");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -313,7 +313,7 @@ public class cStressFeatureVector extends Output {
 
         // (28)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration_Median");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -323,7 +323,7 @@ public class cStressFeatureVector extends Output {
 
         // (29)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "RIP_Inspiration_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
@@ -334,7 +334,7 @@ public class cStressFeatureVector extends Output {
 
         // (30)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Stretch_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "RIP_Stretch");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the stretch quartile deviation from the RIP data source");
@@ -343,7 +343,7 @@ public class cStressFeatureVector extends Output {
 
         // (31)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Stretch_Mean");
+        dataDescriptor.put(METADATA.NAME, "RIP_Stretch");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the stretch mean from the RIP data source");
@@ -352,7 +352,7 @@ public class cStressFeatureVector extends Output {
 
         // (32)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Stretch_Median");
+        dataDescriptor.put(METADATA.NAME, "RIP_Stretch");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the stretch median from the RIP data source");
@@ -361,7 +361,7 @@ public class cStressFeatureVector extends Output {
 
         // (33)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_Stretch_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "RIP_Stretch");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the stretch 80th percentile from the RIP data source");
@@ -371,7 +371,7 @@ public class cStressFeatureVector extends Output {
 
         // (34)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RSA_Quartile_Deviation");
+        dataDescriptor.put(METADATA.NAME, "RSA");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "variance");
@@ -382,7 +382,7 @@ public class cStressFeatureVector extends Output {
 
         // (35)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RSA_Mean");
+        dataDescriptor.put(METADATA.NAME, "RSA");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "variance");
@@ -393,7 +393,7 @@ public class cStressFeatureVector extends Output {
 
         // (36)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RSA_Median");
+        dataDescriptor.put(METADATA.NAME, "RSA");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "variance");
@@ -404,7 +404,7 @@ public class cStressFeatureVector extends Output {
 
         // (37)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RSA_80thPercentile");
+        dataDescriptor.put(METADATA.NAME, "RSA");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "variance");
