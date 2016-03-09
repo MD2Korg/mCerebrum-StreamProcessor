@@ -45,7 +45,6 @@ public class StressProbability extends Output{
         dataDescriptor.put(METADATA.NAME, "Stress Probability");
         dataDescriptor.put(METADATA.MIN_VALUE, "0");
         dataDescriptor.put(METADATA.MAX_VALUE, "1");
-        dataDescriptor.put(METADATA.UNIT, "probability");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the probability of stress using cStress model");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
@@ -62,7 +61,6 @@ public class StressProbability extends Output{
         dataSourceBuilder = dataSourceBuilder.setDataDescriptors(createDataDescriptors());
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.FREQUENCY, "0.0167 Hz");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.NAME, "Stress Probability");
-        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.UNIT, "probability");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents the probability of stress using cStress model");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DATA_TYPE, DataTypeDouble.class.getName());
         return dataSourceBuilder;

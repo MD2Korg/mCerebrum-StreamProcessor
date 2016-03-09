@@ -46,9 +46,8 @@ public class StressActivity extends Output {
         dataDescriptor.put(METADATA.NAME, "Stress Activity");
         dataDescriptor.put(METADATA.MIN_VALUE, "0");
         dataDescriptor.put(METADATA.MAX_VALUE, "1");
-        dataDescriptor.put(METADATA.UNIT, "float");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the activity filter for cStress");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the activity filter for cStress, no activity(0), activity(1)");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         return dataDescriptor;
     }
@@ -65,8 +64,7 @@ public class StressActivity extends Output {
         dataSourceBuilder = dataSourceBuilder.setDataDescriptors(createDataDescriptors());
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.FREQUENCY, "0.0167 Hz");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.NAME, "Stress Activity");
-        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.UNIT, "float");
-        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents the activity filter for cStress");
+        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents the activity filter for cStress: no activity(0), activity(1)");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DATA_TYPE, DataTypeDouble.class.getName());
         return dataSourceBuilder;
     }

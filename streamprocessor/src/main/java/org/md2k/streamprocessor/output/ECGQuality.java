@@ -47,7 +47,6 @@ public class ECGQuality extends Output {
         dataDescriptor.put(METADATA.NAME, "ECG Data Quality");
         dataDescriptor.put(METADATA.MIN_VALUE, "0");
         dataDescriptor.put(METADATA.MAX_VALUE, "4");
-        dataDescriptor.put(METADATA.UNIT, "enum");
         dataDescriptor.put(METADATA.FREQUENCY, "0.2 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the data quality classification for ECG: QUALITY_GOOD = 0, QUALITY_NOISE = 1, QUALITY_BAD = 2, QUALITY_BAND_OFF = 3, QUALITY_MISSING = 4");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
@@ -66,7 +65,6 @@ public class ECGQuality extends Output {
         dataSourceBuilder = dataSourceBuilder.setDataDescriptors(createDataDescriptors());
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.FREQUENCY, "0.2 Hz");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.NAME, "RIP Data Quality");
-        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.UNIT, "enum");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents the data quality classification for ECG: QUALITY_GOOD = 0, QUALITY_NOISE = 1, QUALITY_BAD = 2, QUALITY_BAND_OFF = 3, QUALITY_MISSING = 4");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DATA_TYPE, DataTypeDouble.class.getName());
         return dataSourceBuilder;
