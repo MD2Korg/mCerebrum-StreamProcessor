@@ -407,7 +407,6 @@ public class cStressFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RSA");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "80th percentile");
-        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "variance");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the RSA 80th percentile from the RSA computation");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
