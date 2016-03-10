@@ -26,6 +26,7 @@ android:
 before_install:
 - git clone https://github.com/MD2Korg/mCerebrum-Utilities.git /home/travis/build/MD2Korg/mCerebrum-Utilities
 - git clone https://github.com/MD2Korg/mCerebrum-DataKitAPI.git /home/travis/build/MD2Korg/mCerebrum-DataKitAPI
+- git clone https://github.com/MD2Korg/stream-processor.git /home/travis/build/MD2Korg/stream-processor
 
 before_script:
   - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
