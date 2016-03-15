@@ -31,4 +31,5 @@ import android.os.Environment;
 public class Constants {
     public static final String SERVICE_NAME = "org.md2k.streamprocessor.ServiceStreamProcessor";
     public static final String FILEPATH_MODEL = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.streamprocessor/model.json";
+    public static final String FILEPATH_MODEL_RIP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.streamprocessor/model_rip.json";
 }

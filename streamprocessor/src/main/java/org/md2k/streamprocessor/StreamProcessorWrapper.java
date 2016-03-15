@@ -5,12 +5,12 @@ import android.util.Log;
 import org.md2k.datakitapi.datatype.DataTypeDouble;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 
-import md2k.mCerebrum.CSVDataPoint;
-import md2k.mCerebrum.cStress.StreamProcessor;
-import md2k.mCerebrum.cStress.library.Time;
-import md2k.mCerebrum.cStress.library.datastream.DataPointInterface;
-import md2k.mCerebrum.cStress.library.structs.DataPoint;
-import md2k.mCerebrum.cStress.library.structs.DataPointArray;
+import md2k.mcerebrum.CSVDataPoint;
+import md2k.mcerebrum.cstress.StreamProcessor;
+import md2k.mcerebrum.cstress.library.Time;
+import md2k.mcerebrum.cstress.library.datastream.DataPointInterface;
+import md2k.mcerebrum.cstress.library.structs.DataPoint;
+import md2k.mcerebrum.cstress.library.structs.DataPointArray;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -47,7 +47,8 @@ public class StreamProcessorWrapper {
 
     public StreamProcessorWrapper(final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
-        streamProcessor.loadModel(Constants.FILEPATH_MODEL);
+        streamProcessor.loadModel("cStressModel", Constants.FILEPATH_MODEL);
+        streamProcessor.loadModel("cStressRIPModel", Constants.FILEPATH_MODEL_RIP);
         this.onReceiveListener=onReceiveListener;
 
         streamProcessor.dpInterface = new DataPointInterface() {
