@@ -44,9 +44,9 @@ public class StressLabel extends Output{
         HashMap<String, String> dataDescriptor = new HashMap<>();
         dataDescriptor.put(METADATA.NAME, "Stress Label");
         dataDescriptor.put(METADATA.MIN_VALUE, "0");
-        dataDescriptor.put(METADATA.MAX_VALUE, "1");
+        dataDescriptor.put(METADATA.MAX_VALUE, "2");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents stress value cStress model, no stress (0), stress(1)");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents stress value cStress model, no stress (0), stress(1), unsure(2)");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         return dataDescriptor;
     }
@@ -61,7 +61,7 @@ public class StressLabel extends Output{
         dataSourceBuilder = dataSourceBuilder.setDataDescriptors(createDataDescriptors());
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.FREQUENCY, "0.0167 Hz");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.NAME, "Stress Label");
-        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents stress value using cStress model, no stress (0), stress(1)");
+        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents stress value using cStress model, no stress (0), stress(1), unsure(2)");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DATA_TYPE, DataTypeDouble.class.getName());
         return dataSourceBuilder;
     }
