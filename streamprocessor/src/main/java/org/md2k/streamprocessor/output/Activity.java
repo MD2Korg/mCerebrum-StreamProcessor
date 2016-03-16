@@ -46,7 +46,7 @@ public class Activity extends Output {
         dataDescriptor.put(METADATA.NAME, "Activity");
         dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "standard deviation");
         dataDescriptor.put(METADATA.FREQUENCY, "0.1 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the activity filter for cStress, no activity(0), activity(1)");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the activity level for cStress");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         return dataDescriptor;
     }
