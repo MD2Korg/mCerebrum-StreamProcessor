@@ -49,6 +49,7 @@ public class StreamProcessorWrapper {
         streamProcessor = new StreamProcessor(windowSize);
         streamProcessor.loadModel("cStressModel", Constants.FILEPATH_MODEL);
         streamProcessor.loadModel("cStressRIPModel", Constants.FILEPATH_MODEL_RIP);
+        streamProcessor.loadModel("puffMarkerModel", Constants.FILEPATH_MODEL_PUFFMARKER);
         this.onReceiveListener=onReceiveListener;
 
         streamProcessor.dpInterface = new DataPointInterface() {

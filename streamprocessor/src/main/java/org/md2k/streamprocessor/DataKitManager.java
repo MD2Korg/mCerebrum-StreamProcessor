@@ -14,6 +14,7 @@ import org.md2k.datakitapi.source.platform.PlatformType;
 import org.md2k.streamprocessor.output.Activity;
 import org.md2k.streamprocessor.output.ECGQuality;
 import org.md2k.streamprocessor.output.Output;
+import org.md2k.streamprocessor.output.PuffProbability;
 import org.md2k.streamprocessor.output.RIPQuality;
 import org.md2k.streamprocessor.output.StressActivity;
 import org.md2k.streamprocessor.output.StressEpisode;
@@ -87,6 +88,9 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_X, 1);
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y,2);
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
+        dataSourceTypeTOChannel.put(DataSourceType.GYROSCOPE_X, 4);
+        dataSourceTypeTOChannel.put(DataSourceType.GYROSCOPE_Y,5);
+        dataSourceTypeTOChannel.put(DataSourceType.GYROSCOPE_Z,6);
     }
 
     protected void start() {
@@ -97,6 +101,13 @@ public class DataKitManager {
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_X);
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Y);
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Z);
+
+        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.ACCELEROMETER_Z);
+        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.GYROSCOPE_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.GYROSCOPE_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, DataSourceType.GYROSCOPE_Z);
 
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
@@ -109,6 +120,10 @@ public class DataKitManager {
         addListener(DataSourceType.STRESS_RIP_PROBABILITY);
         addListener(DataSourceType.STRESS_RIP_LABEL);
         addListener(DataSourceType.ACTIVITY);
+        addListener(DataSourceType.PUFF_PROBABILITY);
+        addListener(DataSourceType.PUFF_LABEL);
+        addListener(DataSourceType.PUFFMARKER_FEATURE_VECTOR);
+
     }
     public boolean isActive(){
         return active;
@@ -169,7 +184,6 @@ public class DataKitManager {
                 streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_CSTRESS_FV_RIP);
                 break;
 
-
             case DataSourceType.ORG_MD2K_CSTRESS_DATA_RIP_QUALITY:
                 output = new RIPQuality(context);
                 output.register();
@@ -197,6 +211,28 @@ public class DataKitManager {
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_WINDOWED_MAGNITUDE_STDEV, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_WINDOWED_MAGNITUDE_STDEV);
                 break;
+
+            case DataSourceType.PUFF_PROBABILITY:
+                output=new PuffProbability(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_PROBABILITY, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_PUFFMARKER_PROBABILITY);
+                break;
+
+            case DataSourceType.PUFF_LABEL:
+                output=new StressLabel(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL);
+                break;
+
+            case DataSourceType.PUFFMARKER_FEATURE_VECTOR:
+                output = new cStressFeatureVector(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_FV, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_FV);
+                break;
+
 
             default:
                 break;
