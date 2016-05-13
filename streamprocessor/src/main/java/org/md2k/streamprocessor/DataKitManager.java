@@ -10,10 +10,12 @@ import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.datakitapi.source.datasource.DataSourceType;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
+import org.md2k.datakitapi.source.platform.PlatformId;
 import org.md2k.datakitapi.source.platform.PlatformType;
 import org.md2k.streamprocessor.output.Activity;
 import org.md2k.streamprocessor.output.ECGQuality;
 import org.md2k.streamprocessor.output.Output;
+import org.md2k.streamprocessor.output.PuffLabel;
 import org.md2k.streamprocessor.output.PuffProbability;
 import org.md2k.streamprocessor.output.RIPQuality;
 import org.md2k.streamprocessor.output.StressActivity;
@@ -24,6 +26,7 @@ import org.md2k.streamprocessor.output.StressRIPLabel;
 import org.md2k.streamprocessor.output.StressRIPProbability;
 import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.streamprocessor.output.cStressRIPFeatureVector;
+import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
 
 import java.util.ArrayList;
@@ -31,11 +34,14 @@ import java.util.HashMap;
 
 import md2k.mcerebrum.CSVDataPoint;
 import md2k.mcerebrum.cstress.StreamConstants;
+import md2k.mcerebrum.cstress.autosense.AUTOSENSE;
+import md2k.mcerebrum.cstress.autosense.PUFFMARKER;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
  * - Timothy Hnat <twhnat@memphis.edu>
+ * - Nazir Saleheen <nsleheen@memphis.edu>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,15 +88,26 @@ public class DataKitManager {
     }
 
     protected void createDataSourceTypeTOChannel() {
-        dataSourceTypeTOChannel=new HashMap<>();
-        dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION,7);
-        dataSourceTypeTOChannel.put(DataSourceType.ECG,0);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_X, 1);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y,2);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
-        dataSourceTypeTOChannel.put(DataSourceType.GYROSCOPE_X, 4);
-        dataSourceTypeTOChannel.put(DataSourceType.GYROSCOPE_Y,5);
-        dataSourceTypeTOChannel.put(DataSourceType.GYROSCOPE_Z,6);
+        dataSourceTypeTOChannel = new HashMap<>();
+        dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION, AUTOSENSE.CHEST_RIP);
+        dataSourceTypeTOChannel.put(DataSourceType.ECG, AUTOSENSE.CHEST_ECG);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_X, AUTOSENSE.CHEST_ACCEL_X);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y, AUTOSENSE.CHEST_ACCEL_Y);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z, AUTOSENSE.CHEST_ACCEL_Z);
+
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.ACCELEROMETER_X, PUFFMARKER.LEFTWRIST_ACCEL_X);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.ACCELEROMETER_X, PUFFMARKER.RIGHTWRIST_ACCEL_X);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.ACCELEROMETER_Y, PUFFMARKER.LEFTWRIST_ACCEL_Y);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.ACCELEROMETER_Y, PUFFMARKER.RIGHTWRIST_ACCEL_Y);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.ACCELEROMETER_Z, PUFFMARKER.LEFTWRIST_ACCEL_Z);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.ACCELEROMETER_Z, PUFFMARKER.RIGHTWRIST_ACCEL_Z);
+
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_X, PUFFMARKER.LEFTWRIST_GYRO_X);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_X, PUFFMARKER.RIGHTWRIST_GYRO_X);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_Y, PUFFMARKER.LEFTWRIST_GYRO_Y);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Y, PUFFMARKER.RIGHTWRIST_GYRO_Y);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.LEFTWRIST_GYRO_Z);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.RIGHTWRIST_GYRO_Z);
     }
 
     protected void start() {
@@ -102,12 +119,19 @@ public class DataKitManager {
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Y);
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Z);
 
-        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.ACCELEROMETER_X);
-        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.ACCELEROMETER_Y);
-        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.ACCELEROMETER_Z);
-        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.GYROSCOPE_X);
-        subscribe(PlatformType.AUTOSENSE_WRIST,DataSourceType.GYROSCOPE_Y);
-        subscribe(PlatformType.AUTOSENSE_WRIST, DataSourceType.GYROSCOPE_Z);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
 
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
@@ -134,16 +158,16 @@ public class DataKitManager {
     }
     public void addListener(String dataSourceType){
         Output output;
-        switch (dataSourceType){
+        switch (dataSourceType) {
             case DataSourceType.STRESS_PROBABILITY:
-                output=new StressProbability(context);
+                output = new StressProbability(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY);
                 break;
 
             case DataSourceType.STRESS_LABEL:
-                output=new StressLabel(context);
+                output = new StressLabel(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL);
@@ -213,21 +237,21 @@ public class DataKitManager {
                 break;
 
             case DataSourceType.PUFF_PROBABILITY:
-                output=new PuffProbability(context);
+                output = new PuffProbability(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_PROBABILITY, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_PUFFMARKER_PROBABILITY);
                 break;
 
             case DataSourceType.PUFF_LABEL:
-                output=new StressLabel(context);
+                output = new PuffLabel(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL);
                 break;
 
             case DataSourceType.PUFFMARKER_FEATURE_VECTOR:
-                output = new cStressFeatureVector(context);
+                output = new puffMarkerFeatureVector(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_FV, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_FV);
@@ -251,12 +275,33 @@ public class DataKitManager {
 
     }
 
+    public void subscribe(String platformType, final String platformId, final String dataSourceType) {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
+        dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
+            @Override
+            public void onReceived(DataType dataType) {
+                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId+"_"+dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                streamProcessorWrapper.addDataPoint(csvDataPoint);
+            }
+        });
+
+    }
+
     protected DataSourceClient findDataSourceClient(String platformType, String dataSourceType) {
         PlatformBuilder platformBuilder=new PlatformBuilder().setType(platformType);
         DataSourceBuilder dataSourceBuilder=new DataSourceBuilder();
         dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
         ArrayList<DataSourceClient> dataSourceClientArrayList=dataKitAPI.find(dataSourceBuilder);
         if(dataSourceClientArrayList.size()!=1) return null;
+        return dataSourceClientArrayList.get(0);
+    }
+    protected DataSourceClient findDataSourceClient(String platformType, String platformId, String dataSourceType) {
+        PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType).setId(platformId);
+        DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
+        dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
+        ArrayList<DataSourceClient> dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
+        if (dataSourceClientArrayList.size() != 1) return null;
         return dataSourceClientArrayList.get(0);
     }
 }

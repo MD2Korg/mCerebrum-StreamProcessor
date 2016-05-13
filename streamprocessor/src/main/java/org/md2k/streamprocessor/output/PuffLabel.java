@@ -38,7 +38,7 @@ import java.util.HashMap;
  */
 public class PuffLabel extends Output{
     public PuffLabel(Context context){
-        super(context, DataSourceType.STRESS_LABEL);
+        super(context, DataSourceType.PUFF_LABEL);
     }
     HashMap<String, String> createDataDescriptor() {
         HashMap<String, String> dataDescriptor = new HashMap<>();

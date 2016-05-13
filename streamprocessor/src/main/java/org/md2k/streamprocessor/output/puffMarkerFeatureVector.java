@@ -38,7 +38,7 @@ import java.util.HashMap;
  */
 public class puffMarkerFeatureVector extends Output {
     public puffMarkerFeatureVector(Context context) {
-        super(context, DataSourceType.CSTRESS_FEATURE_VECTOR);
+        super(context, DataSourceType.PUFFMARKER_FEATURE_VECTOR);
     }
 
     ArrayList<HashMap<String, String>> createDataDescriptor() {
@@ -94,17 +94,17 @@ public class puffMarkerFeatureVector extends Output {
 
         // (6)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_U_Stretch");
+        dataDescriptor.put(METADATA.NAME, "RIP_Upper_Stretch");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the U_stretch from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the stretch in upward direction from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
         // (7)
         dataDescriptor = new HashMap<>();
-        dataDescriptor.put(METADATA.NAME, "RIP_L_Stretch");
+        dataDescriptor.put(METADATA.NAME, "RIP_Lower_Stretch");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the L_stretch from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the stretch in downward direction from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -113,7 +113,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Backward_Inspiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the backward difference of inspiration duration from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the first order differences of the inspiration duration values from their previous from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -122,7 +122,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Backward_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the backward difference of expiration duration from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the first order differences of the expiration duration values from their previous from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -131,7 +131,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Backward_Respiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the backward difference of respiration duration from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the first order differences of the respiration duration values from their previous from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -139,7 +139,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor = new HashMap<>();
         dataDescriptor.put(METADATA.NAME, "RIP_Backward_Stretch");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the backward difference of stretch from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents first order differences of the stretch values from their previous from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -148,7 +148,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Forward_Inspiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the forward difference of inspiration duration from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the first order differences of the inspiration duration values from their next from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -157,7 +157,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Forward_Expiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the forward difference of expiration duration from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the first order differences of the expiration duration values from their next from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -166,7 +166,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Forward_Respiration_Duration");
         dataDescriptor.put(METADATA.UNIT, "ms");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the forward difference of respiration duration from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the first order differences of the respiration duration values from their next from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -174,19 +174,15 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor = new HashMap<>();
         dataDescriptor.put(METADATA.NAME, "RIP_Forward_Stretch");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the forward difference of stretch from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents first order differences of the stretch values from their next from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
-//        featureVector.add(d5_expr);
-//        featureVector.add(d5_stretch);
-//        featureVector.add(roc_max);
-//        featureVector.add(roc_min); //19
         // (16)
         dataDescriptor = new HashMap<>();
         dataDescriptor.put(METADATA.NAME, "RIP_d5_Expiration");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the difference of EXPR(i) / avg(EXPR(i-2)...EXPR(i+2)) from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the ratio of its expiration duration to the average expiration duration value in a window of five cycles from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -194,7 +190,7 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor = new HashMap<>();
         dataDescriptor.put(METADATA.NAME, "RIP_d5_Stretch");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the difference of Stretch(i) / avg(Stretch(i-2)...Stretch(i+2)) from the RIP data source");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the ratio of its stretch to the average stretch value in a window of five cycles from the RIP data source");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
@@ -211,6 +207,162 @@ public class puffMarkerFeatureVector extends Output {
         dataDescriptor.put(METADATA.NAME, "RIP_Min_Rate_of_Change");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
         dataDescriptor.put(METADATA.DESCRIPTION, "Represents the minimum rate of change of signal from the RIP data source");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (20)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_Gyro_Magnitude");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the mean of magnitude of gyroscope of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (21)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_Gyro_Magnitude");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the median of magnitude of gyroscope of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (22)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_Gyro_Magnitude");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "standard deviation");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the standard deviation of magnitude of gyroscope of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (23)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_Gyro_Magnitude");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the quartile deviation of magnitude of gyroscope of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (25)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_pitch");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the mean of pitch  of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (26)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_pitch");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the median of pitch of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (27)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_pitch");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "standard deviation");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the standard deviation of pitch of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (28)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_pitch");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the quartile deviation of pitch of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (29)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_roll");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "average");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the mean of roll of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (30)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_roll");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "median");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the median of roll of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (31)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_roll");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "standard deviation");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the standard deviation of roll of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (32)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "WRIST_roll");
+        dataDescriptor.put(METADATA.UNIT, "degree");
+        dataDescriptor.put(METADATA.DESCRIPTIVESTATISTICS, "quartile deviation");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the quartile deviation of roll of Autosense wrist");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (33)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "rStime - wStime");
+        dataDescriptor.put(METADATA.UNIT, "ms");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the time difference between respiration starttime and wrist segment starttime");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (34)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "rEtime - wStime");
+        dataDescriptor.put(METADATA.UNIT, "ms");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the time difference between respiration endtime and wrist segment starttime");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (35)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "rStime - wEtime");
+        dataDescriptor.put(METADATA.UNIT, "ms");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the time difference between respiration starttime and wrist segment endtime");
+        dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
+        result.add(dataDescriptor);
+
+        // (36)
+        dataDescriptor = new HashMap<>();
+        dataDescriptor.put(METADATA.NAME, "rEtime - wEtime");
+        dataDescriptor.put(METADATA.UNIT, "ms");
+        dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the time difference between respiration endtime and wrist segment endtime");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         result.add(dataDescriptor);
 
