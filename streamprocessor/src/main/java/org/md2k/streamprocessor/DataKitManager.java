@@ -5,6 +5,7 @@ import android.content.Context;
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
+import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnReceiveListener;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
@@ -73,7 +74,11 @@ public class DataKitManager {
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
             public void onReceived(String s, DataType value) {
-                outputHashMap.get(s).insert(value);
+                try {
+                    outputHashMap.get(s).insert(value);
+                } catch (DataKitException e) {
+                    e.printStackTrace();
+                }
                 Log.d("Stream Processor", s + " : " + value.toString());
             }
         });
@@ -89,9 +94,10 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
     }
 
-    protected void start() {
+    protected void start() throws DataKitException {
         outputHashMap=new HashMap<>();
         active=true;
+
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.RESPIRATION);
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ECG);
         subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_X);
@@ -202,7 +208,8 @@ public class DataKitManager {
                 break;
         }
     }
-    public void subscribe(String platformType,final String dataSourceType){
+
+    public void subscribe(String platformType, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient=findDataSourceClient(platformType,dataSourceType);
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
@@ -219,7 +226,13 @@ public class DataKitManager {
         PlatformBuilder platformBuilder=new PlatformBuilder().setType(platformType);
         DataSourceBuilder dataSourceBuilder=new DataSourceBuilder();
         dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
-        ArrayList<DataSourceClient> dataSourceClientArrayList=dataKitAPI.find(dataSourceBuilder);
+        ArrayList<DataSourceClient> dataSourceClientArrayList = null;
+        try {
+            dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+            return null;
+        }
         if(dataSourceClientArrayList.size()!=1) return null;
         return dataSourceClientArrayList.get(0);
     }

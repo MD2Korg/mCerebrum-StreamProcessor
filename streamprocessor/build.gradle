@@ -1,3 +1,5 @@
+version = '0.6.0'
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -9,6 +11,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply from: 'versioning.gradle'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -22,8 +25,8 @@ android {
         applicationId "org.md2k.streamprocessor"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 11
-        versionName '0.5.1'
+        versionCode buildVersionCode()
+        versionName version
     }
     buildTypes {
         release {

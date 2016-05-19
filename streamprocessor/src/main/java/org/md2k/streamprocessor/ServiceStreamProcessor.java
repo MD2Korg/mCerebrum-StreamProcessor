@@ -6,9 +6,8 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import org.md2k.datakitapi.DataKitAPI;
+import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnConnectionListener;
-import org.md2k.datakitapi.messagehandler.OnExceptionListener;
-import org.md2k.datakitapi.status.Status;
 import org.md2k.utilities.Report.Log;
 
 /*
@@ -51,24 +50,25 @@ public class ServiceStreamProcessor extends Service {
 
     private void connectDataKit() {
         Log.d(TAG, "connectDataKit()...");
-        DataKitAPI.getInstance(getApplicationContext()).close();
         dataKitAPI = DataKitAPI.getInstance(getApplicationContext());
-        dataKitAPI.connect(new OnConnectionListener() {
-            @Override
-            public void onConnected() {
-                Log.d(TAG, "onConnected()...");
-                dataKitManager=new DataKitManager(ServiceStreamProcessor.this);
-                dataKitManager.start();
-            }
-        }, new OnExceptionListener() {
-            @Override
-            public void onException(Status status) {
-                if(dataKitManager.isActive())
-                    dataKitManager.stop();
-                Toast.makeText(ServiceStreamProcessor.this, "StreamProcessor Stopped. Error: " + status.getStatusMessage(), Toast.LENGTH_LONG).show();
-                stopSelf();
-            }
-        });
+        try {
+            dataKitAPI.connect(new OnConnectionListener() {
+                @Override
+                public void onConnected() {
+                    Log.d(TAG, "onConnected()...");
+                    dataKitManager = new DataKitManager(ServiceStreamProcessor.this);
+                    try {
+                        dataKitManager.start();
+                    } catch (DataKitException e) {
+                        Toast.makeText(ServiceStreamProcessor.this, "Unable to start Service", Toast.LENGTH_SHORT).show();
+                        dataKitManager.stop();
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (DataKitException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -77,7 +77,6 @@ public class ServiceStreamProcessor extends Service {
             dataKitManager.stop();
         if (dataKitAPI != null && dataKitAPI.isConnected()) dataKitAPI.disconnect();
         if (dataKitAPI != null)
-            dataKitAPI.close();
         super.onDestroy();
     }
 
