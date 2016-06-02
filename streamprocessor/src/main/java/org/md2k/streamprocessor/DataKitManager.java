@@ -86,23 +86,23 @@ public class DataKitManager {
     }
 
     protected void createDataSourceTypeTOChannel() {
-        dataSourceTypeTOChannel=new HashMap<>();
-        dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION,7);
-        dataSourceTypeTOChannel.put(DataSourceType.ECG,0);
+        dataSourceTypeTOChannel = new HashMap<>();
+        dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION, 7);
+        dataSourceTypeTOChannel.put(DataSourceType.ECG, 0);
         dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_X, 1);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y,2);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z,3);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y, 2);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z, 3);
     }
 
     protected void start() throws DataKitException {
-        outputHashMap=new HashMap<>();
-        active=true;
+        outputHashMap = new HashMap<>();
+        active = true;
 
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.RESPIRATION);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ECG);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_X);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Y);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Z);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.RESPIRATION);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ECG);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
 
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
@@ -116,25 +116,36 @@ public class DataKitManager {
         addListener(DataSourceType.STRESS_RIP_LABEL);
         addListener(DataSourceType.ACTIVITY);
     }
-    public boolean isActive(){
+
+    public boolean isActive() {
         return active;
     }
 
     protected void stop() {
-        active=false;
+        active = false;
+        try {
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.RESPIRATION);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ECG);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+        }
     }
-    public void addListener(String dataSourceType){
+
+    public void addListener(String dataSourceType) {
         Output output;
-        switch (dataSourceType){
+        switch (dataSourceType) {
             case DataSourceType.STRESS_PROBABILITY:
-                output=new StressProbability(context);
+                output = new StressProbability(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_PROBABILITY);
                 break;
 
             case DataSourceType.STRESS_LABEL:
-                output=new StressLabel(context);
+                output = new StressLabel(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESSLABEL);
@@ -210,21 +221,28 @@ public class DataKitManager {
     }
 
     public void subscribe(String platformType, final String dataSourceType) throws DataKitException {
-        DataSourceClient dataSourceClient=findDataSourceClient(platformType,dataSourceType);
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeDoubleArray dataTypeDoubleArray=(DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint=new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType),dataTypeDoubleArray.getDateTime(),dataTypeDoubleArray.getSample()[0]);
+                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
                 streamProcessorWrapper.addDataPoint(csvDataPoint);
             }
         });
 
     }
 
+    public void unsubscribe(String platformType, final String dataSourceType) throws DataKitException {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
+        dataKitAPI.unsubscribe(dataSourceClient);
+
+    }
+
+
     protected DataSourceClient findDataSourceClient(String platformType, String dataSourceType) {
-        PlatformBuilder platformBuilder=new PlatformBuilder().setType(platformType);
-        DataSourceBuilder dataSourceBuilder=new DataSourceBuilder();
+        PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType);
+        DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
         dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
         ArrayList<DataSourceClient> dataSourceClientArrayList = null;
         try {
@@ -233,7 +251,7 @@ public class DataKitManager {
             e.printStackTrace();
             return null;
         }
-        if(dataSourceClientArrayList.size()!=1) return null;
+        if (dataSourceClientArrayList.size() != 1) return null;
         return dataSourceClientArrayList.get(0);
     }
 }
