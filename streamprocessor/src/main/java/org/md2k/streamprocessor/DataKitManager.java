@@ -80,8 +80,8 @@ public class DataKitManager {
     protected boolean active;
     protected HashMap<String, Output> outputHashMap;
 
-    DataKitManager(Context context) {
-        this.context = context;
+    DataKitManager(Context ccontext) {
+        this.context = ccontext;
         dataKitAPI = DataKitAPI.getInstance(context);
         createDataSourceTypeTOChannel();
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
