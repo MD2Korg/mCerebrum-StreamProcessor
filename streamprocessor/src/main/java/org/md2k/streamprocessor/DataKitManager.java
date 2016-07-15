@@ -28,6 +28,7 @@ import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.streamprocessor.output.cStressRIPFeatureVector;
 import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
+import org.md2k.utilities.UI.AlertDialogs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,13 +74,16 @@ public class DataKitManager {
     protected boolean active;
     protected HashMap<String, Output> outputHashMap;
 
-    DataKitManager(Context context) {
+    DataKitManager(final Context context) {
         this.context = context;
         dataKitAPI = DataKitAPI.getInstance(context);
         createDataSourceTypeTOChannel();
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
             public void onReceived(String s, DataType value) {
+//                if(s.equals(DataSourceType.PUFFMARKER_SMOKING_EPISODE)){
+
+ //               }
                 outputHashMap.get(s).insert(value);
                 Log.d("Stream Processor", s + " : " + value.toString());
             }
@@ -147,6 +151,7 @@ public class DataKitManager {
         addListener(DataSourceType.PUFF_PROBABILITY);
         addListener(DataSourceType.PUFF_LABEL);
         addListener(DataSourceType.PUFFMARKER_FEATURE_VECTOR);
+        addListener(DataSourceType.PUFFMARKER_SMOKING_EPISODE);
 
     }
     public boolean isActive(){
@@ -257,6 +262,12 @@ public class DataKitManager {
                 streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_FV);
                 break;
 
+            case DataSourceType.PUFFMARKER_SMOKING_EPISODE:
+                output = new StressEpisode(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_SMOKING_EPISODE, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_SMOKING_EPISODE);
+                break;
 
             default:
                 break;
