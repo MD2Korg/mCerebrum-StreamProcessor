@@ -3,6 +3,8 @@ package org.md2k.streamprocessor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.content.DialogInterface;
+import android.widget.EditText;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
