@@ -1,6 +1,8 @@
 package org.md2k.streamprocessor;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.widget.EditText;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
@@ -30,6 +32,8 @@ import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
 import org.md2k.utilities.UI.AlertDialogs;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -81,9 +85,14 @@ public class DataKitManager {
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
             public void onReceived(String s, DataType value) {
-//                if(s.equals(DataSourceType.PUFFMARKER_SMOKING_EPISODE)){
-
- //               }
+                if(s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)){
+                    AlertDialogs.showAlertDialogConfirm(context, "Puff", "Puff detected", "Yes", "No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    Log.d("puffMarker", s + " : " + value.toString());
+                }
                 outputHashMap.get(s).insert(value);
                 Log.d("Stream Processor", s + " : " + value.toString());
             }
