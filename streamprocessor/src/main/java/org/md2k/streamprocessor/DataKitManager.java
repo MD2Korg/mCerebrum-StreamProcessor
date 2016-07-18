@@ -2,7 +2,7 @@ package org.md2k.streamprocessor;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.widget.EditText;
+import android.os.Environment;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
@@ -32,8 +32,9 @@ import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
 import org.md2k.utilities.UI.AlertDialogs;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -84,11 +85,18 @@ public class DataKitManager {
         createDataSourceTypeTOChannel();
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
-            public void onReceived(String s, DataType value) {
+            public void onReceived(String s, final DataType value) {
                 if(s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)){
-                    AlertDialogs.showAlertDialogConfirm(context, "Puff", "Puff detected", "Yes", "No", new DialogInterface.OnClickListener() {
+                    AlertDialogs.AlertDialog(context, "Puff", "Puff detected", R.drawable.ic_info_teal_48dp, "Yes", "No", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            String response = "No";
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                response = "Yes";
+                            }
+                            String directory= Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
+                            String filename = "puffResponses.txt";
+                            writeResponse(directory, filename, response+"::"+  value.toString()+","+ System.currentTimeMillis() +"\n");
                         }
                     });
                     Log.d("puffMarker", s + " : " + value.toString());
@@ -98,6 +106,20 @@ public class DataKitManager {
             }
         });
         active = false;
+    }
+
+    private void writeResponse(String directory, String filename, String s) {
+        File dir = new File(directory);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        try {
+            FileWriter writer = new FileWriter(directory + filename, true);
+            writer.write(s);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void createDataSourceTypeTOChannel() {

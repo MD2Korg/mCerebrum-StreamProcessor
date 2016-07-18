@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
- * - Syed Monowar Hossain <monowar.hossain@gmail.com>
  * - Nazir Saleheen <nsleheen@memphis.com>
  * All rights reserved.
  *
@@ -47,7 +46,7 @@ public class PuffProbability extends Output{
         dataDescriptor.put(METADATA.MIN_VALUE, "0");
         dataDescriptor.put(METADATA.MAX_VALUE, "1");
         dataDescriptor.put(METADATA.FREQUENCY, "0.0167 Hz");
-        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the probability of Puff using puffMarker model");
+        dataDescriptor.put(METADATA.DESCRIPTION, "Represents the probability of Puff using the puffMarker model");
         dataDescriptor.put(METADATA.DATA_TYPE, double.class.getName());
         return dataDescriptor;
     }
@@ -62,7 +61,7 @@ public class PuffProbability extends Output{
         dataSourceBuilder = dataSourceBuilder.setDataDescriptors(createDataDescriptors());
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.FREQUENCY, "0.0167 Hz");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.NAME, "Puff Probability");
-        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents the probability of Puff using puffMarker model");
+        dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DESCRIPTION, "Represents the probability of Puff using the puffMarker model");
         dataSourceBuilder = dataSourceBuilder.setMetadata(METADATA.DATA_TYPE, DataTypeDouble.class.getName());
         return dataSourceBuilder;
     }
