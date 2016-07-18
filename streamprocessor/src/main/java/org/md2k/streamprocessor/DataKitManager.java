@@ -106,7 +106,7 @@ public class DataKitManager {
                     Log.d("puffMarker", s + " : " + value.toString());
                 }
                 outputHashMap.get(s).insert(value);
-                Log.d("Stream Processor", s + " : " + value.toString());
+                Log.d(">>Stream Processor", s + " : " + value.toString());
             }
         });
         active = false;
