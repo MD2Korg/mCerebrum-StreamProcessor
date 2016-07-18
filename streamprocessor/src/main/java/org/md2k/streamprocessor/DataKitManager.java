@@ -7,6 +7,7 @@ import android.os.Environment;
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
+import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnReceiveListener;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
@@ -86,7 +87,7 @@ public class DataKitManager {
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
             public void onReceived(String s, final DataType value) {
-                if(s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)){
+                if (s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)) {
                     AlertDialogs.AlertDialog(context, "Puff", "Puff detected", R.drawable.ic_info_teal_48dp, "Yes", "No", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -94,15 +95,15 @@ public class DataKitManager {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
                                 response = "Yes";
                             }
-                            String directory= Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
+                            String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
                             String filename = "puffResponses.txt";
-                            writeResponse(directory, filename, response+"::"+  value.toString()+","+ System.currentTimeMillis() +"\n");
+                            writeResponse(directory, filename, response + "::" + value.toString() + "," + System.currentTimeMillis() + "\n");
                         }
                     });
                     Log.d("puffMarker", s + " : " + value.toString());
                 }
                 outputHashMap.get(s).insert(value);
-                Log.d("Stream Processor", s + " : " + value.toString());
+                Log.d(">>Stream Processor", s + " : " + value.toString());
             }
         });
         active = false;
@@ -145,14 +146,14 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.RIGHTWRIST_GYRO_Z);
     }
 
-    protected void start() {
-        outputHashMap=new HashMap<>();
-        active=true;
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.RESPIRATION);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ECG);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_X);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Y);
-        subscribe(PlatformType.AUTOSENSE_CHEST,DataSourceType.ACCELEROMETER_Z);
+    protected void start() throws DataKitException {
+        outputHashMap = new HashMap<>();
+        active = true;
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.RESPIRATION);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ECG);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
 
         subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
         subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
@@ -185,14 +186,40 @@ public class DataKitManager {
         addListener(DataSourceType.PUFFMARKER_SMOKING_EPISODE);
 
     }
-    public boolean isActive(){
+
+    public boolean isActive() {
         return active;
     }
 
     protected void stop() {
-        active=false;
+        active = false;
+        try {
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.RESPIRATION);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ECG);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
+
+
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+        }
     }
-    public void addListener(String dataSourceType){
+
+    public void addListener(String dataSourceType) {
         Output output;
         switch (dataSourceType) {
             case DataSourceType.STRESS_PROBABILITY:
@@ -304,45 +331,71 @@ public class DataKitManager {
                 break;
         }
     }
-    public void subscribe(String platformType,final String dataSourceType){
-        DataSourceClient dataSourceClient=findDataSourceClient(platformType,dataSourceType);
+
+    public void subscribe(String platformType, final String dataSourceType) throws DataKitException {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeDoubleArray dataTypeDoubleArray=(DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint=new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType),dataTypeDoubleArray.getDateTime(),dataTypeDoubleArray.getSample()[0]);
+                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
                 streamProcessorWrapper.addDataPoint(csvDataPoint);
             }
         });
 
     }
 
-    public void subscribe(String platformType, final String platformId, final String dataSourceType) {
+    public void subscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
                 DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId+"_"+dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
                 streamProcessorWrapper.addDataPoint(csvDataPoint);
             }
         });
 
     }
 
+    public void unsubscribe(String platformType, final String dataSourceType) throws DataKitException {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
+        dataKitAPI.unsubscribe(dataSourceClient);
+
+    }
+
+    public void unsubscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
+        dataKitAPI.unsubscribe(dataSourceClient);
+
+    }
+
     protected DataSourceClient findDataSourceClient(String platformType, String dataSourceType) {
-        PlatformBuilder platformBuilder=new PlatformBuilder().setType(platformType);
-        DataSourceBuilder dataSourceBuilder=new DataSourceBuilder();
+        PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType);
+        DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
         dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
-        ArrayList<DataSourceClient> dataSourceClientArrayList=dataKitAPI.find(dataSourceBuilder);
-        if(dataSourceClientArrayList.size()!=1) return null;
+        ArrayList<DataSourceClient> dataSourceClientArrayList = null;
+        try {
+            dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (dataSourceClientArrayList.size() != 1) return null;
         return dataSourceClientArrayList.get(0);
     }
+
     protected DataSourceClient findDataSourceClient(String platformType, String platformId, String dataSourceType) {
         PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType).setId(platformId);
         DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
         dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
-        ArrayList<DataSourceClient> dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
+        ArrayList<DataSourceClient> dataSourceClientArrayList = null;
+        try {
+            dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+            return null;
+        }
         if (dataSourceClientArrayList.size() != 1) return null;
         return dataSourceClientArrayList.get(0);
     }
