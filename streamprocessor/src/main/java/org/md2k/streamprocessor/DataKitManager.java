@@ -100,7 +100,7 @@ public class DataKitManager {
                             }
                             String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
                             String filename = "puffResponses.txt";
-                            writeResponse(directory, filename, response + "::" + value.toString() + "," + System.currentTimeMillis() + "\n");
+                            writeResponse(directory, filename, response + "::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
                         }
                     });
                     Log.d("puffMarker", s + " : " + value.toString());
