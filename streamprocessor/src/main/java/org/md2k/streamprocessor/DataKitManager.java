@@ -105,8 +105,12 @@ public class DataKitManager {
                     });
                     Log.d("puffMarker", s + " : " + value.toString());
                 }
-                outputHashMap.get(s).insert(value);
-                Log.d(">>Stream Processor", s + " : " + value.toString());
+                try {
+                    outputHashMap.get(s).insert(value);
+                } catch (DataKitException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Stream Processor", s + " : " + value.toString());
             }
         });
         active = false;
