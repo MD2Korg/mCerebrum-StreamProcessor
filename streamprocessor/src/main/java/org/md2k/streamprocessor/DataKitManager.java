@@ -1,6 +1,10 @@
 package org.md2k.streamprocessor;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Environment;
+import android.content.DialogInterface;
+import android.widget.EditText;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
@@ -11,10 +15,13 @@ import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.datakitapi.source.datasource.DataSourceType;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
+import org.md2k.datakitapi.source.platform.PlatformId;
 import org.md2k.datakitapi.source.platform.PlatformType;
 import org.md2k.streamprocessor.output.Activity;
 import org.md2k.streamprocessor.output.ECGQuality;
 import org.md2k.streamprocessor.output.Output;
+import org.md2k.streamprocessor.output.PuffLabel;
+import org.md2k.streamprocessor.output.PuffProbability;
 import org.md2k.streamprocessor.output.RIPQuality;
 import org.md2k.streamprocessor.output.StressActivity;
 import org.md2k.streamprocessor.output.StressEpisode;
@@ -24,18 +31,27 @@ import org.md2k.streamprocessor.output.StressRIPLabel;
 import org.md2k.streamprocessor.output.StressRIPProbability;
 import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.streamprocessor.output.cStressRIPFeatureVector;
+import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
+import org.md2k.utilities.UI.AlertDialogs;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import md2k.mcerebrum.CSVDataPoint;
 import md2k.mcerebrum.cstress.StreamConstants;
+import md2k.mcerebrum.cstress.autosense.AUTOSENSE;
+import md2k.mcerebrum.cstress.autosense.PUFFMARKER;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
  * - Timothy Hnat <twhnat@memphis.edu>
+ * - Nazir Saleheen <nsleheen@memphis.edu>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,13 +83,28 @@ public class DataKitManager {
     protected boolean active;
     protected HashMap<String, Output> outputHashMap;
 
-    DataKitManager(Context context) {
-        this.context = context;
+    DataKitManager(Context ccontext) {
+        this.context = ccontext;
         dataKitAPI = DataKitAPI.getInstance(context);
         createDataSourceTypeTOChannel();
         streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
-            public void onReceived(String s, DataType value) {
+            public void onReceived(String s, final DataType value) {
+                if (s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)) {
+                    AlertDialogs.AlertDialog(context, "Puff", "Puff detected", R.drawable.ic_info_teal_48dp, "Yes", "No", null, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String response = "No";
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                response = "Yes";
+                            }
+                            String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
+                            String filename = "puffResponses.txt";
+                            writeResponse(directory, filename, response + "::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
+                        }
+                    });
+                    Log.d("puffMarker", s + " : " + value.toString());
+                }
                 try {
                     outputHashMap.get(s).insert(value);
                 } catch (DataKitException e) {
@@ -85,13 +116,42 @@ public class DataKitManager {
         active = false;
     }
 
+    private void writeResponse(String directory, String filename, String s) {
+        File dir = new File(directory);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        try {
+            FileWriter writer = new FileWriter(directory + filename, true);
+            writer.write(s);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void createDataSourceTypeTOChannel() {
         dataSourceTypeTOChannel = new HashMap<>();
-        dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION, 7);
-        dataSourceTypeTOChannel.put(DataSourceType.ECG, 0);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_X, 1);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y, 2);
-        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z, 3);
+        dataSourceTypeTOChannel.put(DataSourceType.RESPIRATION, AUTOSENSE.CHEST_RIP);
+        dataSourceTypeTOChannel.put(DataSourceType.ECG, AUTOSENSE.CHEST_ECG);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_X, AUTOSENSE.CHEST_ACCEL_X);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Y, AUTOSENSE.CHEST_ACCEL_Y);
+        dataSourceTypeTOChannel.put(DataSourceType.ACCELEROMETER_Z, AUTOSENSE.CHEST_ACCEL_Z);
+
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.ACCELEROMETER_X, PUFFMARKER.LEFTWRIST_ACCEL_X);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.ACCELEROMETER_X, PUFFMARKER.RIGHTWRIST_ACCEL_X);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.ACCELEROMETER_Y, PUFFMARKER.LEFTWRIST_ACCEL_Y);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.ACCELEROMETER_Y, PUFFMARKER.RIGHTWRIST_ACCEL_Y);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.ACCELEROMETER_Z, PUFFMARKER.LEFTWRIST_ACCEL_Z);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.ACCELEROMETER_Z, PUFFMARKER.RIGHTWRIST_ACCEL_Z);
+
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_X, PUFFMARKER.LEFTWRIST_GYRO_X);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_X, PUFFMARKER.RIGHTWRIST_GYRO_X);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_Y, PUFFMARKER.LEFTWRIST_GYRO_Y);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Y, PUFFMARKER.RIGHTWRIST_GYRO_Y);
+        dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.LEFTWRIST_GYRO_Z);
+        dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.RIGHTWRIST_GYRO_Z);
+
     }
 
     protected void start() throws DataKitException {
@@ -104,6 +164,21 @@ public class DataKitManager {
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
 
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+
+
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
         addListener(DataSourceType.STRESS_ACTIVITY);
@@ -115,6 +190,11 @@ public class DataKitManager {
         addListener(DataSourceType.STRESS_RIP_PROBABILITY);
         addListener(DataSourceType.STRESS_RIP_LABEL);
         addListener(DataSourceType.ACTIVITY);
+        addListener(DataSourceType.PUFF_PROBABILITY);
+        addListener(DataSourceType.PUFF_LABEL);
+        addListener(DataSourceType.PUFFMARKER_FEATURE_VECTOR);
+        addListener(DataSourceType.PUFFMARKER_SMOKING_EPISODE);
+
     }
 
     public boolean isActive() {
@@ -129,6 +209,21 @@ public class DataKitManager {
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
+
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+
         } catch (DataKitException e) {
             e.printStackTrace();
         }
@@ -186,7 +281,6 @@ public class DataKitManager {
                 streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_CSTRESS_FV_RIP);
                 break;
 
-
             case DataSourceType.ORG_MD2K_CSTRESS_DATA_RIP_QUALITY:
                 output = new RIPQuality(context);
                 output.register();
@@ -215,6 +309,34 @@ public class DataKitManager {
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_DATA_ACCEL_WINDOWED_MAGNITUDE_STDEV);
                 break;
 
+            case DataSourceType.PUFF_PROBABILITY:
+                output = new PuffProbability(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_PROBABILITY, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_PUFFMARKER_PROBABILITY);
+                break;
+
+            case DataSourceType.PUFF_LABEL:
+                output = new PuffLabel(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL);
+                break;
+
+            case DataSourceType.PUFFMARKER_FEATURE_VECTOR:
+                output = new puffMarkerFeatureVector(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_FV, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_FV);
+                break;
+
+            case DataSourceType.PUFFMARKER_SMOKING_EPISODE:
+                output = new StressEpisode(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_SMOKING_EPISODE, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_SMOKING_EPISODE);
+                break;
+
             default:
                 break;
         }
@@ -233,8 +355,27 @@ public class DataKitManager {
 
     }
 
+    public void subscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
+        dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
+            @Override
+            public void onReceived(DataType dataType) {
+                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                streamProcessorWrapper.addDataPoint(csvDataPoint);
+            }
+        });
+
+    }
+
     public void unsubscribe(String platformType, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
+        dataKitAPI.unsubscribe(dataSourceClient);
+
+    }
+
+    public void unsubscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
+        DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
         dataKitAPI.unsubscribe(dataSourceClient);
 
     }
@@ -252,6 +393,22 @@ public class DataKitManager {
             return null;
         }
         if (dataSourceClientArrayList.size() != 1) return null;
+        return dataSourceClientArrayList.get(0);
+    }
+
+    protected DataSourceClient findDataSourceClient(String platformType, String platformId, String dataSourceType) {
+        PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType).setId(platformId);
+        DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
+        dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
+        ArrayList<DataSourceClient> dataSourceClientArrayList = null;
+        try {
+            dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (dataSourceClientArrayList.size() != 1)
+            return null;
         return dataSourceClientArrayList.get(0);
     }
 }
