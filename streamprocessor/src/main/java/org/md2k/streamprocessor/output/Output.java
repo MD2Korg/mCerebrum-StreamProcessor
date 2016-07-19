@@ -1,9 +1,11 @@
 package org.md2k.streamprocessor.output;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
+import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.source.application.Application;
 import org.md2k.datakitapi.source.application.ApplicationBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
@@ -58,13 +60,24 @@ public abstract class Output {
         return new DataSourceBuilder().setId(null).setType(dataSourceType).setPlatform(platform).setApplication(application);
     }
     public void register() {
-        dataSourceClient = dataKitAPI.register(createDataSourceBuilder());
+        try {
+            dataSourceClient = dataKitAPI.register(createDataSourceBuilder());
+        } catch (DataKitException e) {
+            Toast.makeText(context, "Unable to register data source", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
 
     }
     public void unregister(){
-        dataKitAPI.unregister(dataSourceClient);
+        try {
+            dataKitAPI.unregister(dataSourceClient);
+        } catch (DataKitException e) {
+            Toast.makeText(context, "Unable to unregister data source", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
-    public void insert(DataType dataType){
+
+    public void insert(DataType dataType) throws DataKitException {
         dataKitAPI.insert(dataSourceClient, dataType);
     }
 }

@@ -147,11 +147,13 @@ public class DataKitManager {
         dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Y, PUFFMARKER.RIGHTWRIST_GYRO_Y);
         dataSourceTypeTOChannel.put(PlatformId.LEFT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.LEFTWRIST_GYRO_Z);
         dataSourceTypeTOChannel.put(PlatformId.RIGHT_WRIST + "_" + DataSourceType.GYROSCOPE_Z, PUFFMARKER.RIGHTWRIST_GYRO_Z);
+
     }
 
     protected void start() throws DataKitException {
         outputHashMap = new HashMap<>();
         active = true;
+
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.RESPIRATION);
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ECG);
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
@@ -171,6 +173,7 @@ public class DataKitManager {
         subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
         subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
         subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+
 
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
@@ -203,7 +206,6 @@ public class DataKitManager {
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
 
-
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
@@ -217,6 +219,7 @@ public class DataKitManager {
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+
         } catch (DataKitException e) {
             e.printStackTrace();
         }
@@ -373,6 +376,7 @@ public class DataKitManager {
 
     }
 
+
     protected DataSourceClient findDataSourceClient(String platformType, String dataSourceType) {
         PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType);
         DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
@@ -399,7 +403,8 @@ public class DataKitManager {
             e.printStackTrace();
             return null;
         }
-        if (dataSourceClientArrayList.size() != 1) return null;
+        if (dataSourceClientArrayList.size() != 1)
+            return null;
         return dataSourceClientArrayList.get(0);
     }
 }
