@@ -9,6 +9,7 @@ import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnConnectionListener;
 import org.md2k.utilities.Report.Log;
+import org.md2k.utilities.Report.LogStorage;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -46,6 +47,9 @@ public class ServiceStreamProcessor extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate()");
         connectDataKit();
+
+        //Enable logcat offline storage for warnings and errors
+        LogStorage.startLogFileStorageProcess(getApplicationContext().getPackageName());
     }
 
     private void connectDataKit() {

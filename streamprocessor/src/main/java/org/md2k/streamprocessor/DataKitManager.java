@@ -164,20 +164,29 @@ public class DataKitManager {
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
 
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+        try {
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+        } catch (Exception e) {
+            Log.w("StreamProcessor", "AutoSense left wrist not available");
+            e.printStackTrace();
+        }
 
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
-        subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
-
+        try {
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+        } catch (Exception e) {
+            Log.w("StreamProcessor", "AutoSense right wrist not available");
+            e.printStackTrace();
+        }
 
         addListener(DataSourceType.STRESS_PROBABILITY);
         addListener(DataSourceType.STRESS_LABEL);
@@ -209,20 +218,27 @@ public class DataKitManager {
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_X);
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Y);
             unsubscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
-
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+        }
+        try {
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
-
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+        } catch (DataKitException e) {
+            e.printStackTrace();
+        }
+        try {
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
             unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+
 
         } catch (DataKitException e) {
             e.printStackTrace();
@@ -370,13 +386,14 @@ public class DataKitManager {
 
     public void unsubscribe(String platformType, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
-        dataKitAPI.unsubscribe(dataSourceClient);
-
+        if (dataSourceClient != null)
+            dataKitAPI.unsubscribe(dataSourceClient);
     }
 
     public void unsubscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
-        dataKitAPI.unsubscribe(dataSourceClient);
+        if (dataSourceClient != null)
+            dataKitAPI.unsubscribe(dataSourceClient);
 
     }
 
