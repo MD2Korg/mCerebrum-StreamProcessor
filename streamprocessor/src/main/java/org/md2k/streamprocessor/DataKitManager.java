@@ -91,7 +91,11 @@ public class DataKitManager {
             @Override
             public void onReceived(String s, final DataType value) {
                 if (s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)) {
-                    AlertDialogs.AlertDialog(context, "Puff", "Puff detected", R.drawable.ic_info_teal_48dp, "Yes", "No", null, new DialogInterface.OnClickListener() {
+                    String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
+                    String filename = "puffResponses.txt";
+                    writeResponse(directory, filename, "yes/no ::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
+
+/*                    AlertDialogs.AlertDialog(context, "Puff", "Puff detected", R.drawable.ic_info_teal_48dp, "Yes", "No", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String response = "No";
@@ -103,7 +107,7 @@ public class DataKitManager {
                             writeResponse(directory, filename, response + "::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
                         }
                     });
-                    Log.d("puffMarker", s + " : " + value.toString());
+*/                    Log.d("puffMarker", s + " : " + value.toString());
                 }
                 try {
                     outputHashMap.get(s).insert(value);
