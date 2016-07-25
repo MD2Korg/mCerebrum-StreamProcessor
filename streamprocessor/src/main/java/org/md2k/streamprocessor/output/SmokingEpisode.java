@@ -39,7 +39,7 @@ import java.util.HashMap;
 
 public class SmokingEpisode extends Output{
     public SmokingEpisode(Context context){
-        super(context, DataSourceType.PUFF_LABEL);
+        super(context, DataSourceType.PUFFMARKER_SMOKING_EPISODE);
     }
     HashMap<String, String> createDataDescriptor() {
         HashMap<String, String> dataDescriptor = new HashMap<>();
