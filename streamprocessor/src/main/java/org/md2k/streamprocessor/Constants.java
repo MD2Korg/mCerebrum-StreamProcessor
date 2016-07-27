@@ -33,4 +33,5 @@ public class Constants {
     public static final String FILEPATH_MODEL = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.streamprocessor/model.json";
     public static final String FILEPATH_MODEL_RIP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.streamprocessor/model_rip.json";
     public static final String FILEPATH_MODEL_PUFFMARKER = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.streamprocessor/model_puffmarker.json";
+    public static final String INTENT_STOP = "stop_service";
 }

@@ -1,8 +1,12 @@
 package org.md2k.streamprocessor;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import org.md2k.datakitapi.DataKitAPI;
@@ -42,10 +46,19 @@ public class ServiceStreamProcessor extends Service {
     private static final String TAG = ServiceStreamProcessor.class.getSimpleName();
     protected DataKitAPI dataKitAPI;
     protected DataKitManager dataKitManager;
+    private BroadcastReceiver mMessageReceiverStop = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            stopSelf();
+        }
+    };
 
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate()");
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mMessageReceiverStop,
+                new IntentFilter(Constants.INTENT_STOP));
+
         connectDataKit();
 
         //Enable logcat offline storage for warnings and errors
@@ -66,21 +79,23 @@ public class ServiceStreamProcessor extends Service {
                     } catch (DataKitException e) {
                         Toast.makeText(ServiceStreamProcessor.this, "Unable to start Service", Toast.LENGTH_SHORT).show();
                         dataKitManager.stop();
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(Constants.INTENT_STOP));
                         e.printStackTrace();
                     }
                 }
             });
         } catch (DataKitException e) {
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(Constants.INTENT_STOP));
             e.printStackTrace();
         }
     }
 
     @Override
     public void onDestroy() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mMessageReceiverStop);
         if(dataKitManager.isActive())
             dataKitManager.stop();
         if (dataKitAPI != null && dataKitAPI.isConnected()) dataKitAPI.disconnect();
-        if (dataKitAPI != null)
         super.onDestroy();
     }
 

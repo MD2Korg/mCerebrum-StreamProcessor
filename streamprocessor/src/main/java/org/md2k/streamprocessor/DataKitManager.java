@@ -2,8 +2,10 @@ package org.md2k.streamprocessor;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Environment;
 import android.content.DialogInterface;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.EditText;
 
 import org.md2k.datakitapi.DataKitAPI;
@@ -112,7 +114,7 @@ public class DataKitManager {
                 try {
                     outputHashMap.get(s).insert(value);
                 } catch (DataKitException e) {
-                    e.printStackTrace();
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Constants.INTENT_STOP));
                 }
                 Log.d("Stream Processor", s + " : " + value.toString());
             }
@@ -410,7 +412,7 @@ public class DataKitManager {
         try {
             dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
         } catch (DataKitException e) {
-            e.printStackTrace();
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Constants.INTENT_STOP));
             return null;
         }
         if (dataSourceClientArrayList.size() != 1) return null;
@@ -425,7 +427,7 @@ public class DataKitManager {
         try {
             dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);
         } catch (DataKitException e) {
-            e.printStackTrace();
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Constants.INTENT_STOP));
             return null;
         }
         if (dataSourceClientArrayList.size() != 1)

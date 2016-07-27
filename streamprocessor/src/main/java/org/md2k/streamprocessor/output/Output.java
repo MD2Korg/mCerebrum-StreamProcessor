@@ -1,6 +1,8 @@
 package org.md2k.streamprocessor.output;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import org.md2k.datakitapi.DataKitAPI;
@@ -13,6 +15,7 @@ import org.md2k.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.datakitapi.source.platform.Platform;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
 import org.md2k.datakitapi.source.platform.PlatformType;
+import org.md2k.streamprocessor.Constants;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -64,6 +67,7 @@ public abstract class Output {
             dataSourceClient = dataKitAPI.register(createDataSourceBuilder());
         } catch (DataKitException e) {
             Toast.makeText(context, "Unable to register data source", Toast.LENGTH_SHORT).show();
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Constants.INTENT_STOP));
             e.printStackTrace();
         }
 
