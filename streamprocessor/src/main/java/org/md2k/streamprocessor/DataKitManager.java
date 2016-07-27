@@ -25,6 +25,7 @@ import org.md2k.streamprocessor.output.Output;
 import org.md2k.streamprocessor.output.PuffLabel;
 import org.md2k.streamprocessor.output.PuffProbability;
 import org.md2k.streamprocessor.output.RIPQuality;
+import org.md2k.streamprocessor.output.SmokingEpisode;
 import org.md2k.streamprocessor.output.StressActivity;
 import org.md2k.streamprocessor.output.StressEpisode;
 import org.md2k.streamprocessor.output.StressLabel;
@@ -353,7 +354,7 @@ public class DataKitManager {
                 break;
 
             case DataSourceType.PUFFMARKER_SMOKING_EPISODE:
-                output = new StressEpisode(context);
+                output = new SmokingEpisode(context);
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_PUFFMARKER_SMOKING_EPISODE, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataArrayStream(StreamConstants.ORG_MD2K_PUFFMARKER_SMOKING_EPISODE);
