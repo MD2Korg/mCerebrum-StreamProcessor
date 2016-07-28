@@ -1,4 +1,4 @@
-version = '1.2.2'
+version = '1.2.3'
 
 buildscript {
     repositories {
@@ -62,7 +62,7 @@ dependencies {
     compile project(':datakitapi')
     compile project(':stream-processor')
     compile project(':utilities')
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true;
     }
 }
