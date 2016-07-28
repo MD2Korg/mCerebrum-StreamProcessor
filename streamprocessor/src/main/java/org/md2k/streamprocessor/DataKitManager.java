@@ -1,12 +1,9 @@
 package org.md2k.streamprocessor;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
-import android.content.DialogInterface;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.EditText;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
@@ -36,12 +33,10 @@ import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.streamprocessor.output.cStressRIPFeatureVector;
 import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
-import org.md2k.utilities.UI.AlertDialogs;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -110,7 +105,8 @@ public class DataKitManager {
                             writeResponse(directory, filename, response + "::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
                         }
                     });
-*/                    Log.d("puffMarker", s + " : " + value.toString());
+*/
+                    Log.d("puffMarker", s + " : " + value.toString());
                 }
                 try {
                     outputHashMap.get(s).insert(value);
@@ -370,9 +366,13 @@ public class DataKitManager {
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
-                streamProcessorWrapper.addDataPoint(csvDataPoint);
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                    streamProcessorWrapper.addDataPoint(csvDataPoint);
+                } catch (Exception ignored) {
+
+                }
             }
         });
 
@@ -383,9 +383,13 @@ public class DataKitManager {
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
-                streamProcessorWrapper.addDataPoint(csvDataPoint);
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                    streamProcessorWrapper.addDataPoint(csvDataPoint);
+                } catch (Exception ignored) {
+
+                }
             }
         });
 

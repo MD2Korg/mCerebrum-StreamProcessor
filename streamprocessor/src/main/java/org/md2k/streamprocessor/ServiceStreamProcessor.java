@@ -93,7 +93,8 @@ public class ServiceStreamProcessor extends Service {
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mMessageReceiverStop);
-        if(dataKitManager.isActive())
+
+        if (dataKitManager != null && dataKitManager.isActive())
             dataKitManager.stop();
         if (dataKitAPI != null && dataKitAPI.isConnected()) dataKitAPI.disconnect();
         super.onDestroy();
