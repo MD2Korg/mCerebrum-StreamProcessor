@@ -400,15 +400,15 @@ public class DataKitManager {
             subscribeForThreeTuple(dataSourceClientMBAccel, platformId, DataSourceType.ACCELEROMETER);
             subscribeForThreeTuple(dataSourceClientMBGyro, platformId, DataSourceType.GYROSCOPE);
 
-            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(64.0, 64.0);
+            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(31.0, 31.0);
 
         } else if (dataSourceClientAW != null) {
-            subscribeAutoSenseWrist(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_X, 1.0/1024);
-            subscribeAutoSenseWrist(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Y, 1.0/1024);
-            subscribeAutoSenseWrist(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Z, 1.0/1024);
-            subscribeAutoSenseWrist(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_X, 250.0 / 2048);
-            subscribeAutoSenseWrist(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Y, 250.0 / 2048);
-            subscribeAutoSenseWrist(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Z, 250.0 / 2048);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Z);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Z);
 
             streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(64.0 / 3.0, 64.0 / 3.0);
 
@@ -416,19 +416,19 @@ public class DataKitManager {
             subscribeForThreeTuple(dataSourceClientMSAccel, platformId, DataSourceType.ACCELEROMETER);
             subscribeForThreeTuple(dataSourceClientMSGyro, platformId, DataSourceType.GYROSCOPE);
 
-            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(64.0 / 3.0, 64.0 / 1.5);
+            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(16, 32);
 
         }
     }
 
-    private void subscribeAutoSenseWrist(String platformType, final String platformId, final String dataSourceType, final double conversionFactor) throws DataKitException {
+    private void subscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
                 try {
                     DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
-                    CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), conversionFactor*dataTypeDoubleArray.getSample()[0]);
+                    CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
                     streamProcessorWrapper.addDataPoint(csvDataPoint);
                 } catch (Exception ignored) {
 
@@ -499,7 +499,7 @@ public class DataKitManager {
     protected DataSourceClient findDataSourceClient(String platformType, String platformId, String dataSourceType) {
         PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType).setId(platformId);
         DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
-        if (dataSourceType != null || dataSourceType.length() != 1)
+        if (dataSourceType != null && dataSourceType.length() != 1)
             dataSourceBuilder.setType(dataSourceType);
         dataSourceBuilder.setPlatform(platformBuilder.build());
         ArrayList<DataSourceClient> dataSourceClientArrayList = null;
