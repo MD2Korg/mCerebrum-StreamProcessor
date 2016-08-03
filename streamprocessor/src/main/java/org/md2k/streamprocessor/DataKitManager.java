@@ -396,7 +396,7 @@ public class DataKitManager {
 
         DataSourceClient dataSourceClientAW = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, null);
 
-        if (dataSourceClientMBAccel != null && dataSourceClientMBAccel != null) {
+        if (dataSourceClientMBAccel != null && dataSourceClientMBGyro != null) {
             subscribeForThreeTuple(dataSourceClientMBAccel, platformId, DataSourceType.ACCELEROMETER);
             subscribeForThreeTuple(dataSourceClientMBGyro, platformId, DataSourceType.GYROSCOPE);
 
