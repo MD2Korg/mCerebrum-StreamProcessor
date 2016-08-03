@@ -16,6 +16,7 @@ import org.md2k.datakitapi.source.platform.Platform;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
 import org.md2k.datakitapi.source.platform.PlatformType;
 import org.md2k.streamprocessor.Constants;
+import org.md2k.utilities.Report.Log;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -67,6 +68,7 @@ public abstract class Output {
             dataSourceClient = dataKitAPI.register(createDataSourceBuilder());
         } catch (DataKitException e) {
             Toast.makeText(context, "Unable to register data source", Toast.LENGTH_SHORT).show();
+            Log.d("md2k", "here 4");
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Constants.INTENT_STOP));
             e.printStackTrace();
         }

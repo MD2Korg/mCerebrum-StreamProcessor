@@ -177,7 +177,7 @@ public class DataKitManager {
         }
 
         try {
-            subscribe(PlatformId.LEFT_WRIST);
+            subscribe(PlatformId.RIGHT_WRIST);
         } catch (Exception e) {
             Log.w("StreamProcessor", "Right wrist not available");
             e.printStackTrace();
