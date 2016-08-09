@@ -1,21 +1,20 @@
 package org.md2k.streamprocessor;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
-import android.content.DialogInterface;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.EditText;
 
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.datatype.DataType;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnReceiveListener;
+import org.md2k.datakitapi.source.datasource.DataSource;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.datakitapi.source.datasource.DataSourceType;
+import org.md2k.datakitapi.source.platform.Platform;
 import org.md2k.datakitapi.source.platform.PlatformBuilder;
 import org.md2k.datakitapi.source.platform.PlatformId;
 import org.md2k.datakitapi.source.platform.PlatformType;
@@ -36,12 +35,10 @@ import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.streamprocessor.output.cStressRIPFeatureVector;
 import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
 import org.md2k.utilities.Report.Log;
-import org.md2k.utilities.UI.AlertDialogs;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -110,7 +107,8 @@ public class DataKitManager {
                             writeResponse(directory, filename, response + "::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
                         }
                     });
-*/                    Log.d("puffMarker", s + " : " + value.toString());
+*/
+                    Log.d("puffMarker", s + " : " + value.toString());
                 }
                 try {
                     outputHashMap.get(s).insert(value);
@@ -172,26 +170,16 @@ public class DataKitManager {
         subscribe(PlatformType.AUTOSENSE_CHEST, DataSourceType.ACCELEROMETER_Z);
 
         try {
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+            subscribe(PlatformId.LEFT_WRIST);
         } catch (Exception e) {
-            Log.w("StreamProcessor", "AutoSense left wrist not available");
+            Log.w("StreamProcessor", "Left wrist not available");
             e.printStackTrace();
         }
 
         try {
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
-            subscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
+            subscribe(PlatformId.RIGHT_WRIST);
         } catch (Exception e) {
-            Log.w("StreamProcessor", "AutoSense right wrist not available");
+            Log.w("StreamProcessor", "Right wrist not available");
             e.printStackTrace();
         }
 
@@ -229,23 +217,12 @@ public class DataKitManager {
             e.printStackTrace();
         }
         try {
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_X);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Y);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.ACCELEROMETER_Z);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_X);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Y);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.LEFT_WRIST, DataSourceType.GYROSCOPE_Z);
+            unsubscribe(PlatformId.LEFT_WRIST);
         } catch (DataKitException e) {
             e.printStackTrace();
         }
         try {
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Y);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_Z);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.ACCELEROMETER_X);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_X);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Y);
-            unsubscribe(PlatformType.AUTOSENSE_WRIST, PlatformId.RIGHT_WRIST, DataSourceType.GYROSCOPE_Z);
-
+            unsubscribe(PlatformId.RIGHT_WRIST);
 
         } catch (DataKitException e) {
             e.printStackTrace();
@@ -370,26 +347,125 @@ public class DataKitManager {
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
-                streamProcessorWrapper.addDataPoint(csvDataPoint);
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                    streamProcessorWrapper.addDataPoint(csvDataPoint);
+                } catch (Exception ignored) {
+
+                }
             }
         });
 
     }
 
-    public void subscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
+    private void unsubscribe(final String platformId) throws DataKitException {
+        DataSourceClient dataSourceClientMBAccel = findDataSourceClient(PlatformType.MICROSOFT_BAND, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMBGyro = findDataSourceClient(PlatformType.MICROSOFT_BAND, platformId, DataSourceType.GYROSCOPE);
+
+        DataSourceClient dataSourceClientMSAccel = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMSGyro = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.GYROSCOPE);
+
+        DataSourceClient dataSourceClientAW = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, null);
+
+        if (dataSourceClientMBAccel != null && dataSourceClientMBAccel != null) {
+            dataKitAPI.unsubscribe(dataSourceClientMBAccel);
+            dataKitAPI.unsubscribe(dataSourceClientMBGyro);
+
+        } else if (dataSourceClientAW != null) {
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Z);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_X);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Y);
+            unsubscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Z);
+
+        } else if (dataSourceClientMSAccel != null && dataSourceClientMSGyro != null) {
+            dataKitAPI.unsubscribe(dataSourceClientMSAccel);
+            dataKitAPI.unsubscribe(dataSourceClientMSGyro);
+
+        }
+    }
+
+    private void subscribe(final String platformId) throws DataKitException {
+        DataSourceClient dataSourceClientMBAccel = findDataSourceClient(PlatformType.MICROSOFT_BAND, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMBGyro = findDataSourceClient(PlatformType.MICROSOFT_BAND, platformId, DataSourceType.GYROSCOPE);
+
+        DataSourceClient dataSourceClientMSAccel = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMSGyro = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.GYROSCOPE);
+
+        DataSourceClient dataSourceClientAW = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, null);
+
+        if (dataSourceClientMBAccel != null && dataSourceClientMBGyro != null) {
+            subscribeForThreeTuple(dataSourceClientMBAccel, platformId, DataSourceType.ACCELEROMETER);
+            subscribeForThreeTuple(dataSourceClientMBGyro, platformId, DataSourceType.GYROSCOPE);
+
+            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(31.0, 31.0);
+
+        } else if (dataSourceClientAW != null) {
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Z);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_X);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Y);
+            subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Z);
+
+            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(64.0 / 3.0, 64.0 / 3.0);
+
+        } else if (dataSourceClientMSAccel != null && dataSourceClientMSGyro != null) {
+            subscribeForThreeTuple(dataSourceClientMSAccel, platformId, DataSourceType.ACCELEROMETER);
+            subscribeForThreeTuple(dataSourceClientMSGyro, platformId, DataSourceType.GYROSCOPE);
+
+            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(16, 32);
+
+        }
+    }
+
+    private void subscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
         dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
             @Override
             public void onReceived(DataType dataType) {
-                DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
-                CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
-                streamProcessorWrapper.addDataPoint(csvDataPoint);
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPoint = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + dataSourceType), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                    streamProcessorWrapper.addDataPoint(csvDataPoint);
+                } catch (Exception ignored) {
+
+                }
             }
         });
-
     }
+
+    private void subscribeForThreeTuple(DataSourceClient dataSourceClient, final String platformId, final String dataSourceId) throws DataKitException {
+        dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
+            @Override
+            public void onReceived(DataType dataType) {
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPointx = null;
+                    CSVDataPoint csvDataPointy = null;
+                    CSVDataPoint csvDataPointz = null;
+
+                    if (DataSourceType.ACCELEROMETER.equals(dataSourceId)) {
+                        csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_X), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                        csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Y), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[1]);
+                        csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Z), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[2]);
+                    } else if (DataSourceType.GYROSCOPE.equals(dataSourceId)) {
+                        csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[0]);
+                        csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[1]);
+                        csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), dataTypeDoubleArray.getSample()[2]);
+                    }
+                    streamProcessorWrapper.addDataPoint(csvDataPointx);
+                    streamProcessorWrapper.addDataPoint(csvDataPointy);
+                    streamProcessorWrapper.addDataPoint(csvDataPointz);
+                } catch (Exception ignored) {
+
+                }
+            }
+        });
+    }
+
 
     public void unsubscribe(String platformType, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
@@ -423,7 +499,9 @@ public class DataKitManager {
     protected DataSourceClient findDataSourceClient(String platformType, String platformId, String dataSourceType) {
         PlatformBuilder platformBuilder = new PlatformBuilder().setType(platformType).setId(platformId);
         DataSourceBuilder dataSourceBuilder = new DataSourceBuilder();
-        dataSourceBuilder.setType(dataSourceType).setPlatform(platformBuilder.build());
+        if (dataSourceType != null && dataSourceType.length() != 1)
+            dataSourceBuilder.setType(dataSourceType);
+        dataSourceBuilder.setPlatform(platformBuilder.build());
         ArrayList<DataSourceClient> dataSourceClientArrayList = null;
         try {
             dataSourceClientArrayList = dataKitAPI.find(dataSourceBuilder);

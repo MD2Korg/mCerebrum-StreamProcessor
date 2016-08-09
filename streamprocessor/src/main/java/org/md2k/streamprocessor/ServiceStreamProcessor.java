@@ -12,6 +12,7 @@ import android.widget.Toast;
 import org.md2k.datakitapi.DataKitAPI;
 import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnConnectionListener;
+import org.md2k.datakitapi.time.DateTime;
 import org.md2k.utilities.Report.Log;
 import org.md2k.utilities.Report.LogStorage;
 
@@ -49,6 +50,7 @@ public class ServiceStreamProcessor extends Service {
     private BroadcastReceiver mMessageReceiverStop = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.w(TAG, "time=" + DateTime.convertTimeStampToDateTime(DateTime.getDateTime()) + ",timestamp=" + DateTime.getDateTime() + ",broadcast_receiver_stop_service");
             stopSelf();
         }
     };
@@ -63,6 +65,8 @@ public class ServiceStreamProcessor extends Service {
 
         //Enable logcat offline storage for warnings and errors
         LogStorage.startLogFileStorageProcess(getApplicationContext().getPackageName());
+        Log.w(TAG, "time=" + DateTime.convertTimeStampToDateTime(DateTime.getDateTime()) + ",timestamp=" + DateTime.getDateTime() + ",service_start");
+
     }
 
     private void connectDataKit() {
@@ -93,7 +97,8 @@ public class ServiceStreamProcessor extends Service {
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mMessageReceiverStop);
-        if(dataKitManager.isActive())
+        Log.w(TAG, "time=" + DateTime.convertTimeStampToDateTime(DateTime.getDateTime()) + ",timestamp=" + DateTime.getDateTime() + ",service_stop");
+        if (dataKitManager != null && dataKitManager.isActive())
             dataKitManager.stop();
         if (dataKitAPI != null && dataKitAPI.isConnected()) dataKitAPI.disconnect();
         super.onDestroy();
