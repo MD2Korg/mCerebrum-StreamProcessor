@@ -47,16 +47,19 @@ public class ServiceStreamProcessor extends Service {
     private static final String TAG = ServiceStreamProcessor.class.getSimpleName();
     protected DataKitAPI dataKitAPI;
     protected DataKitManager dataKitManager;
+    private boolean isStopping;
     private BroadcastReceiver mMessageReceiverStop = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.w(TAG, "time=" + DateTime.convertTimeStampToDateTime(DateTime.getDateTime()) + ",timestamp=" + DateTime.getDateTime() + ",broadcast_receiver_stop_service");
+            clear();
             stopSelf();
         }
     };
 
     public void onCreate() {
         super.onCreate();
+        isStopping = false;
         Log.d(TAG, "onCreate()");
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mMessageReceiverStop,
                 new IntentFilter(Constants.INTENT_STOP));
@@ -94,13 +97,19 @@ public class ServiceStreamProcessor extends Service {
         }
     }
 
-    @Override
-    public void onDestroy() {
+    void clear() {
+        if (isStopping) return;
+        isStopping = true;
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mMessageReceiverStop);
         Log.w(TAG, "time=" + DateTime.convertTimeStampToDateTime(DateTime.getDateTime()) + ",timestamp=" + DateTime.getDateTime() + ",service_stop");
         if (dataKitManager != null && dataKitManager.isActive())
             dataKitManager.stop();
         if (dataKitAPI != null && dataKitAPI.isConnected()) dataKitAPI.disconnect();
+    }
+
+    @Override
+    public void onDestroy() {
+        clear();
         super.onDestroy();
     }
 

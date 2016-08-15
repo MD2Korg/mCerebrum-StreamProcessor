@@ -79,6 +79,7 @@ public class StreamProcessorWrapper {
             windowStartTime = Time.nextEpochTimestamp(dp.timestamp, windowSize);
 
         if ((dp.timestamp - windowStartTime) >= windowSize) { //Process the buffer every windowSize milliseconds
+
             long starttime = System.currentTimeMillis();
             streamProcessor.go();
             long endtime = System.currentTimeMillis();
