@@ -5,6 +5,9 @@ import android.util.Log;
 import org.md2k.datakitapi.datatype.DataTypeDouble;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import md2k.mcerebrum.CSVDataPoint;
 import md2k.mcerebrum.cstress.StreamProcessor;
 import md2k.mcerebrum.cstress.library.Time;
@@ -44,13 +47,15 @@ public class StreamProcessorWrapper {
     protected int windowSize = 60000;
     protected long windowStartTime = -1;
     protected OnReceiveListener onReceiveListener;
-
+    private List<CSVDataPoint> dataBuffer;
     public StreamProcessorWrapper(final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
         streamProcessor.loadModel("cStressModel", Constants.FILEPATH_MODEL);
         streamProcessor.loadModel("cStressRIPModel", Constants.FILEPATH_MODEL_RIP);
         streamProcessor.loadModel("puffMarkerModel", Constants.FILEPATH_MODEL_PUFFMARKER);
         this.onReceiveListener=onReceiveListener;
+
+        dataBuffer = new ArrayList<>(25000);
 
         streamProcessor.dpInterface = new DataPointInterface() {
             @Override
@@ -72,13 +77,21 @@ public class StreamProcessorWrapper {
         };
     }
 
-    protected void addDataPoint(CSVDataPoint ap) {
-        DataPoint dp = new DataPoint(ap.timestamp, ap.value);
-        streamProcessor.add(ap.channel, dp);
-        if (windowStartTime < 0)
-            windowStartTime = Time.nextEpochTimestamp(dp.timestamp, windowSize);
+    protected void addDataPoint(CSVDataPoint point) {
 
-        if ((dp.timestamp - windowStartTime) >= windowSize) { //Process the buffer every windowSize milliseconds
+        dataBuffer.add(point);
+
+        if (windowStartTime < 0)
+            windowStartTime = Time.nextEpochTimestamp(point.timestamp, windowSize);
+
+        if ((point.timestamp - windowStartTime) >= windowSize) { //Process the buffer every windowSize milliseconds
+            Log.d(TAG, "Stream Processor Iteration Running: " + point.timestamp);
+            Log.d(TAG, "Data buffer size: " + dataBuffer.size());
+            for (CSVDataPoint ap : dataBuffer) {
+                DataPoint dp = new DataPoint(ap.timestamp, ap.value);
+                streamProcessor.add(ap.channel, dp);
+            }
+            dataBuffer.clear();
 
             long starttime = System.currentTimeMillis();
             streamProcessor.go();
