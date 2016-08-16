@@ -17,9 +17,7 @@ android:
   licenses:
   - ".+"
 before_install:
-- openssl aes-256-cbc -K $encrypted_fbdd1e2ae3f8_key -iv $encrypted_fbdd1e2ae3f8_iv
-  -in streamprocessor/release-key.keystore.enc -out streamprocessor/release-key.keystore
-  -d
+- openssl aes-256-cbc -K $encrypted_fbdd1e2ae3f8_key -iv $encrypted_fbdd1e2ae3f8_iv -in streamprocessor/release-key.keystore.enc -out streamprocessor/release-key.keystore -d
 - git clone https://github.com/MD2Korg/mCerebrum-Utilities.git /home/travis/build/MD2Korg/mCerebrum-Utilities
 - git clone https://github.com/MD2Korg/mCerebrum-DataKitAPI.git /home/travis/build/MD2Korg/mCerebrum-DataKitAPI
 - git clone https://github.com/MD2Korg/stream-processor.git /home/travis/build/MD2Korg/stream-processor
