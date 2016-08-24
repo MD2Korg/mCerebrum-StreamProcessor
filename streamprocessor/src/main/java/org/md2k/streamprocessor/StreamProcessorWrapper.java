@@ -92,11 +92,17 @@ public class StreamProcessorWrapper {
                 streamProcessor.add(ap.channel, dp);
             }
             dataBuffer.clear();
-
-            long starttime = System.currentTimeMillis();
-            streamProcessor.go();
-            long endtime = System.currentTimeMillis();
-            Log.d(TAG, "Loop iteration in seconds: " + (endtime - starttime) / 1000.0);
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    long starttime = System.currentTimeMillis();
+                    streamProcessor.go();
+                    long endtime = System.currentTimeMillis();
+                    Log.d(TAG, "Loop iteration in seconds: " + (endtime - starttime) / 1000.0);
+                }
+            });
+            t.setPriority(1);
+            t.start();
             windowStartTime += windowSize;
         }
     }

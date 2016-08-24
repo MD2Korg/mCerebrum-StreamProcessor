@@ -1,12 +1,15 @@
 package org.md2k.streamprocessor;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.NotificationCompat;
 import android.widget.Toast;
 
 import org.md2k.datakitapi.DataKitAPI;
@@ -72,6 +75,13 @@ public class ServiceStreamProcessor extends Service {
 
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.w(TAG, "onStartCommand()...");
+        startForeground(98765, getCompatNotification());
+        return START_STICKY;
+    }
+
     private void connectDataKit() {
         Log.d(TAG, "connectDataKit()...");
         dataKitAPI = DataKitAPI.getInstance(getApplicationContext());
@@ -100,6 +110,7 @@ public class ServiceStreamProcessor extends Service {
     void clear() {
         if (isStopping) return;
         isStopping = true;
+        stopForeground(true);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mMessageReceiverStop);
         Log.w(TAG, "time=" + DateTime.convertTimeStampToDateTime(DateTime.getDateTime()) + ",timestamp=" + DateTime.getDateTime() + ",service_stop");
         if (dataKitManager != null && dataKitManager.isActive())
@@ -116,5 +127,11 @@ public class ServiceStreamProcessor extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private Notification getCompatNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getResources().getString(R.string.app_name));
+        return builder.build();
     }
 }
