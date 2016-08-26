@@ -10,6 +10,7 @@ import org.md2k.datakitapi.datatype.DataType;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 import org.md2k.datakitapi.exception.DataKitException;
 import org.md2k.datakitapi.messagehandler.OnReceiveListener;
+import org.md2k.datakitapi.source.METADATA;
 import org.md2k.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.datakitapi.source.datasource.DataSourceType;
@@ -366,7 +367,7 @@ public class DataKitManager {
 
         DataSourceClient dataSourceClientAW = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, null);
 
-        if (dataSourceClientMBAccel != null && dataSourceClientMBAccel != null) {
+        if (dataSourceClientMBAccel != null && dataSourceClientMBGyro != null) {
             dataKitAPI.unsubscribe(dataSourceClientMBAccel);
             dataKitAPI.unsubscribe(dataSourceClientMBGyro);
 
@@ -386,6 +387,10 @@ public class DataKitManager {
     }
 
     private void subscribe(final String platformId) throws DataKitException {
+        String wrist = PUFFMARKER.LEFT_WRIST;
+        if (PlatformId.RIGHT_WRIST.equals(platformId))
+            wrist = PUFFMARKER.RIGHT_WRIST;
+
         DataSourceClient dataSourceClientMBAccel = findDataSourceClient(PlatformType.MICROSOFT_BAND, platformId, DataSourceType.ACCELEROMETER);
         DataSourceClient dataSourceClientMBGyro = findDataSourceClient(PlatformType.MICROSOFT_BAND, platformId, DataSourceType.GYROSCOPE);
 
@@ -398,23 +403,26 @@ public class DataKitManager {
             subscribeForThreeTuple(dataSourceClientMBAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{1, 0, 2}, new int[]{-1, -1, -1});
             subscribeForThreeTuple(dataSourceClientMBGyro, platformId, DataSourceType.GYROSCOPE, new int[]{1, 0, 2}, new int[]{-1, -1, -1});
 
-            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(31.0, 31.0);
+            streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientMBAccel.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientMBGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
 
         } else if (dataSourceClientAW != null) {
             subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_X);
             subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Y);
             subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_Z);
+            DataSourceClient dataSourceClientAWAccl = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.ACCELEROMETER_X);
+
             subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_X);
             subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Y);
             subscribe(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_Z);
+            DataSourceClient dataSourceClientAGyro = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, DataSourceType.GYROSCOPE_X);
 
-            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(64.0 / 3.0, 64.0 / 3.0);
+            streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientAWAccl.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientAGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
 
         } else if (dataSourceClientMSAccel != null && dataSourceClientMSGyro != null) {
             subscribeForThreeTuple(dataSourceClientMSAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1});
             subscribeForThreeTuple(dataSourceClientMSGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, 1, 1});
 
-            streamProcessorWrapper.streamProcessor.configurePuffMarkerWristDataStreams(16, 32);
+            streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientMSAccel.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientMSGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
 
         }
     }
