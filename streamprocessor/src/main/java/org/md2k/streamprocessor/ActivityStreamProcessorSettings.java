@@ -3,6 +3,10 @@ package org.md2k.streamprocessor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import org.md2k.datakitapi.messagehandler.ResultCallback;
+import org.md2k.utilities.permission.PermissionInfo;
 
 /**
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -36,6 +40,17 @@ public class ActivityStreamProcessorSettings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PermissionInfo permissionInfo = new PermissionInfo();
+        permissionInfo.getPermissions(this, new ResultCallback<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+                if (!result) {
+                    Toast.makeText(getApplicationContext(), "!PERMISSION DENIED !!! Could not continue...", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                }
+            }
+        });
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
