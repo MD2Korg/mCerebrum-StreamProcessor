@@ -48,29 +48,31 @@ public class StreamProcessorWrapper {
     protected long windowStartTime = -1;
     protected OnReceiveListener onReceiveListener;
     private List<CSVDataPoint> dataBuffer;
+    private Thread t;
+
     public StreamProcessorWrapper(final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
         streamProcessor.loadModel("cStressModel", Constants.FILEPATH_MODEL);
         streamProcessor.loadModel("cStressRIPModel", Constants.FILEPATH_MODEL_RIP);
         streamProcessor.loadModel("puffMarkerModel", Constants.FILEPATH_MODEL_PUFFMARKER);
-        this.onReceiveListener=onReceiveListener;
+        this.onReceiveListener = onReceiveListener;
 
         dataBuffer = new ArrayList<>(25000);
 
         streamProcessor.dpInterface = new DataPointInterface() {
             @Override
             public void dataPointHandler(String stream, DataPoint dp) {
-                DataTypeDouble dataTypeDouble=new DataTypeDouble(dp.timestamp,dp.value);
+                DataTypeDouble dataTypeDouble = new DataTypeDouble(dp.timestamp, dp.value);
                 onReceiveListener.onReceived(stream, dataTypeDouble);
                 Log.d("Stream Processor", stream + " : " + dp.toString());
             }
 
             @Override
             public void dataPointArrayHandler(String stream, DataPointArray dp) {
-                double[] value=new double[dp.value.size()];
-                for(int i=0;i<dp.value.size();i++)
-                    value[i]=dp.value.get(i);
-                DataTypeDoubleArray dataTypeDoubleArray=new DataTypeDoubleArray(dp.timestamp,value);
+                double[] value = new double[dp.value.size()];
+                for (int i = 0; i < dp.value.size(); i++)
+                    value[i] = dp.value.get(i);
+                DataTypeDoubleArray dataTypeDoubleArray = new DataTypeDoubleArray(dp.timestamp, value);
                 onReceiveListener.onReceived(stream, dataTypeDoubleArray);
                 Log.d("Stream Processor", stream + " : " + dp.toString());
             }
@@ -92,7 +94,15 @@ public class StreamProcessorWrapper {
                 streamProcessor.add(ap.channel, dp);
             }
             dataBuffer.clear();
-            Thread t = new Thread(new Runnable() {
+
+            if (t != null && t.isAlive()) {
+                try {
+                    t.join(); //Block until thread completes
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Error in waiting on Thread to stop");
+                }
+            }
+            t = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     long starttime = System.currentTimeMillis();
