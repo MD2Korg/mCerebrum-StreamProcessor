@@ -419,8 +419,8 @@ public class DataKitManager {
             streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientAWAccl.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientAGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
 
         } else if (dataSourceClientMSAccel != null && dataSourceClientMSGyro != null) {
-            subscribeForThreeTuple(dataSourceClientMSAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1});
-            subscribeForThreeTuple(dataSourceClientMSGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, 1, 1});
+            subscribeForThreeTuple(dataSourceClientMSAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, -1, -1});
+            subscribeForThreeTuple(dataSourceClientMSGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, -1, -1});
 
             streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientMSAccel.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientMSGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
 
