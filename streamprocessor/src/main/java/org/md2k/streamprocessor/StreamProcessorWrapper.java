@@ -1,10 +1,13 @@
 package org.md2k.streamprocessor;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.md2k.datakitapi.datatype.DataTypeDouble;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
+import org.md2k.utilities.FileManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +52,17 @@ public class StreamProcessorWrapper {
     protected OnReceiveListener onReceiveListener;
     private List<CSVDataPoint> dataBuffer;
     private Thread t;
+    private String persistState = "";
 
-    public StreamProcessorWrapper(final OnReceiveListener onReceiveListener) {
+    public StreamProcessorWrapper(Context context, final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
+
+        persistState = FileManager.getDirectory(context, FileManager.INTERNAL_SDCARD_PREFERRED) + "/streamProcessor.state";
+        File file = new File(persistState);
+        if(file.exists())
+            streamProcessor.importDatastreams(persistState);
+
+
         streamProcessor.loadModel("cStressModel", Constants.FILEPATH_MODEL);
         streamProcessor.loadModel("cStressRIPModel", Constants.FILEPATH_MODEL_RIP);
         streamProcessor.loadModel("puffMarkerModel", Constants.FILEPATH_MODEL_PUFFMARKER);
@@ -107,6 +118,7 @@ public class StreamProcessorWrapper {
                 public void run() {
                     long starttime = System.currentTimeMillis();
                     streamProcessor.go();
+                    streamProcessor.exportDatastreams(persistState);
                     long endtime = System.currentTimeMillis();
                     Log.d(TAG, "Loop iteration in seconds: " + (endtime - starttime) / 1000.0);
                 }

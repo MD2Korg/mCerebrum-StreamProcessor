@@ -33,6 +33,7 @@ import org.md2k.streamprocessor.output.StressRIPProbability;
 import org.md2k.streamprocessor.output.cStressFeatureVector;
 import org.md2k.streamprocessor.output.cStressRIPFeatureVector;
 import org.md2k.streamprocessor.output.puffMarkerFeatureVector;
+import org.md2k.utilities.FileManager;
 import org.md2k.utilities.Report.Log;
 
 import java.io.File;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 
 import md2k.mcerebrum.CSVDataPoint;
 import md2k.mcerebrum.cstress.StreamConstants;
+import md2k.mcerebrum.cstress.StreamProcessor;
 import md2k.mcerebrum.cstress.autosense.AUTOSENSE;
 import md2k.mcerebrum.cstress.autosense.PUFFMARKER;
 
@@ -86,11 +88,11 @@ public class DataKitManager {
         this.context = ccontext;
         dataKitAPI = DataKitAPI.getInstance(context);
         createDataSourceTypeTOChannel();
-        streamProcessorWrapper = new StreamProcessorWrapper(new org.md2k.streamprocessor.OnReceiveListener() {
+        streamProcessorWrapper = new StreamProcessorWrapper(context, new org.md2k.streamprocessor.OnReceiveListener() {
             @Override
             public void onReceived(String s, final DataType value) {
                 if (s.equals(StreamConstants.ORG_MD2K_PUFFMARKER_PUFFLABEL)) {
-                    String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponces/";
+                    String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/puffResponses/";
                     String filename = "puffResponses.txt";
                     writeResponse(directory, filename, "yes/no ::" + value.getDateTime() + "," + System.currentTimeMillis() + "\n");
 

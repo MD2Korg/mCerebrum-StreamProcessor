@@ -2,6 +2,8 @@ package org.md2k.streamprocessor;
 
 import android.os.Environment;
 
+import org.md2k.utilities.FileManager;
+
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
