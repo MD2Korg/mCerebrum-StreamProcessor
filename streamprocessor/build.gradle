@@ -57,7 +57,7 @@ if ( hasProperty('MD2K_RELEASE_KEY_PASSWORD') ) {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "org.md2k.streamprocessor"
         minSdkVersion 19
