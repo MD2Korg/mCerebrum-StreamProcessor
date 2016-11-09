@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Settings">
+        <Preference
+            android:icon="@drawable/ic_delete_teal_48dp"
+            android:key="key_state"
+            android:title="Reseet Stream Processor State" />
+    </PreferenceCategory>
+</PreferenceScreen>

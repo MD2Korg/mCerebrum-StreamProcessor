@@ -129,8 +129,8 @@ public class ActivityMain extends AppCompatActivity {
                 finish();
                 break;
             case R.id.action_settings:
-//                intent = new Intent(this, ActivityPhoneSensorSettings.class);
-//                startActivity(intent);
+                intent = new Intent(this, ActivitySettings.class);
+                startActivity(intent);
                 break;
             case R.id.action_about:
                 intent = new Intent(this, ActivityAbout.class);

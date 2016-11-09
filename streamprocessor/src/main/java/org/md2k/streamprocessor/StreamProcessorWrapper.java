@@ -7,7 +7,10 @@ import org.md2k.datakitapi.datatype.DataTypeDouble;
 import org.md2k.datakitapi.datatype.DataTypeDoubleArray;
 import org.md2k.utilities.FileManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,8 @@ import md2k.mcerebrum.cstress.library.Time;
 import md2k.mcerebrum.cstress.library.datastream.DataPointInterface;
 import md2k.mcerebrum.cstress.library.structs.DataPoint;
 import md2k.mcerebrum.cstress.library.structs.DataPointArray;
+
+import static org.md2k.streamprocessor.Constants.STREAM_PROCESSOR_STATE_FILE;
 
 /*
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -57,15 +62,21 @@ public class StreamProcessorWrapper {
     public StreamProcessorWrapper(Context context, final OnReceiveListener onReceiveListener) {
         streamProcessor = new StreamProcessor(windowSize);
 
-        persistState = FileManager.getDirectory(context, FileManager.INTERNAL_SDCARD_PREFERRED) + "/streamProcessor.state";
+        persistState = FileManager.getDirectory(context, FileManager.INTERNAL_SDCARD_PREFERRED) + STREAM_PROCESSOR_STATE_FILE;
         File file = new File(persistState);
         if(file.exists())
             streamProcessor.importDatastreams(persistState);
 
+        InputStream ins = context.getResources().openRawResource(R.raw.cstress_model_ecg_rip);
+        streamProcessor.loadModelFromString("cStressModel", readTextFile(ins));
 
-        streamProcessor.loadModel("cStressModel", Constants.FILEPATH_MODEL);
-        streamProcessor.loadModel("cStressRIPModel", Constants.FILEPATH_MODEL_RIP);
-        streamProcessor.loadModel("puffMarkerModel", Constants.FILEPATH_MODEL_PUFFMARKER);
+        ins = context.getResources().openRawResource(R.raw.cstress_model_rip);
+        streamProcessor.loadModelFromString("cStressRIPModel", readTextFile(ins));
+
+        ins = context.getResources().openRawResource(R.raw.puffmarker_model);
+        streamProcessor.loadModelFromString("puffMarkerModel", readTextFile(ins));
+
+
         this.onReceiveListener = onReceiveListener;
 
         dataBuffer = new ArrayList<>(25000);
@@ -88,6 +99,23 @@ public class StreamProcessorWrapper {
                 Log.d("Stream Processor", stream + " : " + dp.toString());
             }
         };
+    }
+
+    public String readTextFile(InputStream inputStream) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        byte buf[] = new byte[1024];
+        int len;
+        try {
+            while ((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+
+        }
+        return outputStream.toString();
     }
 
     protected void addDataPoint(CSVDataPoint point) {

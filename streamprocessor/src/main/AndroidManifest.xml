@@ -23,6 +23,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ActivitySettings"
+            android:enabled="true"
+            android:exported="true"
+            android:label="Settings"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".ServiceStreamProcessor"
