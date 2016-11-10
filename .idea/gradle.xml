@@ -14,7 +14,15 @@
             <option value="$PROJECT_DIR$/../stream-processor" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$/../mCerebrum-DataKitAPI/datakitapi" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/streamprocessor" />
+            <option value="$PROJECT_DIR$/../mCerebrum-Utilities/utilities" />
+            <option value="$PROJECT_DIR$/../stream-processor" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>
