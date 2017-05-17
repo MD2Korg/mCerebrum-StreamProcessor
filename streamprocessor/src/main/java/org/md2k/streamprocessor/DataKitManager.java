@@ -26,6 +26,10 @@ import org.md2k.streamprocessor.output.RIPQuality;
 import org.md2k.streamprocessor.output.SmokingEpisode;
 import org.md2k.streamprocessor.output.StressActivity;
 import org.md2k.streamprocessor.output.StressEpisode;
+import org.md2k.streamprocessor.output.StressEpisodeEnd;
+import org.md2k.streamprocessor.output.StressEpisodeFullEpisode;
+import org.md2k.streamprocessor.output.StressEpisodePeak;
+import org.md2k.streamprocessor.output.StressEpisodeStart;
 import org.md2k.streamprocessor.output.StressLabel;
 import org.md2k.streamprocessor.output.StressProbability;
 import org.md2k.streamprocessor.output.StressRIPLabel;
@@ -199,7 +203,10 @@ public class DataKitManager {
         addListener(DataSourceType.PUFF_LABEL);
         addListener(DataSourceType.PUFFMARKER_FEATURE_VECTOR);
         addListener(DataSourceType.PUFFMARKER_SMOKING_EPISODE);
-
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_ARRAY_CLASSIFICATION_FULL_EPISODE);
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_START);
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_PEAK);
+        addListener(DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_END);
     }
 
     public boolean isActive() {
@@ -301,6 +308,30 @@ public class DataKitManager {
                 output.register();
                 outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION, output);
                 streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION);
+                break;
+            case DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_START:
+                output = new StressEpisodeStart(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_START, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_START);
+                break;
+            case DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_PEAK:
+                output = new StressEpisodePeak(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_PEAK, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_PEAK);
+                break;
+            case DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_END:
+                output = new StressEpisodeEnd(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_END, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_END);
+                break;
+            case DataSourceType.ORG_MD2K_CSTRESS_STRESS_EPISODE_ARRAY_CLASSIFICATION_FULL_EPISODE:
+                output = new StressEpisodeFullEpisode(context);
+                output.register();
+                outputHashMap.put(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_ARRAY_CLASSIFICATION_FULL_EPISODE, output);
+                streamProcessorWrapper.streamProcessor.registerCallbackDataStream(StreamConstants.ORG_MD2K_CSTRESS_STRESS_EPISODE_ARRAY_CLASSIFICATION_FULL_EPISODE);
                 break;
 
             case DataSourceType.ACTIVITY:

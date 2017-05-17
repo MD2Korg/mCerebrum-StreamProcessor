@@ -3,6 +3,6 @@
         <Preference
             android:icon="@drawable/ic_delete_teal_48dp"
             android:key="key_state"
-            android:title="Reseet Stream Processor State" />
+            android:title="Reset Stream Processor State" />
     </PreferenceCategory>
 </PreferenceScreen>
