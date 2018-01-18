@@ -1,4 +1,4 @@
-version = '1.6.3'
+version = '2.0.0'
 
 buildscript {
     repositories {
@@ -64,6 +64,10 @@ android {
         targetSdkVersion 25
         versionCode buildVersionCode()
         versionName version
+        jackOptions {
+            enabled true
+        }
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -110,6 +114,8 @@ dependencies {
     compile project(':datakitapi')
     compile project(':stream-processor')
     compile project(':utilities')
+    compile project(':core')
+    compile project(':commons')
     compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true;
     }
