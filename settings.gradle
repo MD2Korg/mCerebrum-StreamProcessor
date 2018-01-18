@@ -5,3 +5,6 @@ include ':utilities'
 project(':utilities').projectDir=new File('../mCerebrum-Utilities/utilities')
 include ':stream-processor'
 project(':stream-processor').projectDir=new File('../stream-processor')
+include ':commons', ":core"
+project(':commons').projectDir=new File('../mCerebrum-Library/commons')
+project(':core').projectDir=new File('../mCerebrum-Library/core')
