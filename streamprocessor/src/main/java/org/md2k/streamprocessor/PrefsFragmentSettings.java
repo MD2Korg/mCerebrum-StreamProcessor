@@ -1,8 +1,6 @@
 package org.md2k.streamprocessor;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -13,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.md2k.mcerebrum.commons.dialog.Dialog;
+import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.utilities.FileManager;
-import org.md2k.utilities.UI.AlertDialogs;
 
 /**
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -56,17 +55,17 @@ public class PrefsFragmentSettings extends PreferenceFragment {
     }
 
     void clearData() {
-        AlertDialogs.AlertDialog(getActivity(), "Delete StreamProcessor State?", "Delete Stream Processor State?\n\nData can't be recovered after deletion", R.drawable.ic_delete_red_48dp, "Yes", "Cancel", null, new DialogInterface.OnClickListener() {
+        Dialog.simple(getActivity(), "Delete StreamProcessor State?", "Delete Stream Processor State?\n\nData can't be recovered after deletion", "Yes", "cancel", new DialogCallback() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == AlertDialog.BUTTON_POSITIVE) {
+            public void onSelected(String value) {
+                if(value.equalsIgnoreCase("Yes")){
                     new DeleteDataAsyncTask().execute();
                 } else {
                     if (getActivity().getIntent().getBooleanExtra("delete", false))
                         getActivity().finish();
                 }
             }
-        });
+        }).show();
     }
 
     public void setPreferences() {
@@ -116,7 +115,7 @@ public class PrefsFragmentSettings extends PreferenceFragment {
         protected void onPreExecute() {
             super.onPreExecute();
             // Shows Progress Bar Dialog and then call doInBackground method
-            dialog.setMessage("Deleting database & archive files. Please wait...");
+            dialog.setMessage("Deleting states. Please wait...");
             dialog.show();
         }
 

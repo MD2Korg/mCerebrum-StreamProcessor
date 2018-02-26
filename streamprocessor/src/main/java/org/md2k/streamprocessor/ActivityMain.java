@@ -16,9 +16,8 @@ import com.crashlytics.android.Crashlytics;
 
 import org.md2k.datakitapi.messagehandler.ResultCallback;
 import org.md2k.datakitapi.time.DateTime;
+import org.md2k.mcerebrum.core.access.appinfo.AppInfo;
 import org.md2k.utilities.Apps;
-import org.md2k.utilities.UI.ActivityAbout;
-import org.md2k.utilities.UI.ActivityCopyright;
 import org.md2k.utilities.permission.PermissionInfo;
 
 import io.fabric.sdk.android.Fabric;
@@ -99,7 +98,7 @@ public class ActivityMain extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ServiceStreamProcessor.class);
-                if (Apps.isServiceRunning(getBaseContext(), Constants.SERVICE_NAME)) {
+                if (AppInfo.isServiceRunning(getBaseContext(), Constants.SERVICE_NAME)) {
                     stopService(intent);
                 }else{
                     startService(intent);
@@ -129,10 +128,13 @@ public class ActivityMain extends AppCompatActivity {
                 finish();
                 break;
             case R.id.action_settings:
+/*
                 intent = new Intent(this, ActivitySettings.class);
                 startActivity(intent);
+*/
                 break;
             case R.id.action_about:
+/*
                 intent = new Intent(this, ActivityAbout.class);
                 try {
                     intent.putExtra(org.md2k.utilities.Constants.VERSION_CODE, String.valueOf(this.getPackageManager().getPackageInfo(getPackageName(), 0).versionCode));
@@ -141,10 +143,13 @@ public class ActivityMain extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 startActivity(intent);
+*/
                 break;
             case R.id.action_copyright:
+/*
                 intent = new Intent(this, ActivityCopyright.class);
                 startActivity(intent);
+*/
                 break;
             default:
                 break;
