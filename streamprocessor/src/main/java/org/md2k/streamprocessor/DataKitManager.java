@@ -398,6 +398,9 @@ public class DataKitManager {
         DataSourceClient dataSourceClientMSAccel = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.ACCELEROMETER);
         DataSourceClient dataSourceClientMSGyro = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.GYROSCOPE);
 
+        DataSourceClient dataSourceClientMSHRVPAccel = findDataSourceClient(PlatformType.MOTION_SENSE_HRV_PLUS, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMSHRVPGyro = findDataSourceClient(PlatformType.MOTION_SENSE_HRV_PLUS, platformId, DataSourceType.QUATERNION);
+
         DataSourceClient dataSourceClientAW = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, null);
 
         if (dataSourceClientMBAccel != null && dataSourceClientMBGyro != null) {
@@ -416,6 +419,10 @@ public class DataKitManager {
             dataKitAPI.unsubscribe(dataSourceClientMSAccel);
             dataKitAPI.unsubscribe(dataSourceClientMSGyro);
 
+        } else if (dataSourceClientMSHRVPAccel != null && dataSourceClientMSHRVPGyro != null) {
+            dataKitAPI.unsubscribe(dataSourceClientMSHRVPAccel);
+            dataKitAPI.unsubscribe(dataSourceClientMSHRVPGyro);
+
         }
     }
 
@@ -429,6 +436,13 @@ public class DataKitManager {
 
         DataSourceClient dataSourceClientMSAccel = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.ACCELEROMETER);
         DataSourceClient dataSourceClientMSGyro = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.GYROSCOPE);
+
+        DataSourceClient dataSourceClientMSHRVPAccel = null;//findDataSourceClient(PlatformType.MOTION_SENSE_HRV_PLUS, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMSHRVPGyro = null;//findDataSourceClient(PlatformType.MOTION_SENSE_HRV_PLUS, platformId, DataSourceType.QUATERNION);
+
+
+        DataSourceClient dataSourceClientMSHRVAccel = findDataSourceClient(PlatformType.MOTION_SENSE_HRV, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMSHRVGyro = findDataSourceClient(PlatformType.MOTION_SENSE_HRV, platformId, DataSourceType.GYROSCOPE);
 
         DataSourceClient dataSourceClientAW = findDataSourceClient(PlatformType.AUTOSENSE_WRIST, platformId, null);
 
@@ -462,6 +476,31 @@ public class DataKitManager {
             }
 
             streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientMSAccel.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientMSGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
+
+        } else if (dataSourceClientMSHRVPAccel != null && dataSourceClientMSHRVPGyro != null) {
+            if (PlatformId.RIGHT_WRIST.equals(platformId)) {
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVPAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, -1, 1});
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVPGyro, platformId, DataSourceType.QUATERNION, new int[]{0, 1, 2}, new int[]{1, -1, 1});
+            } else {
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVPAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1});
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVPGyro, platformId, DataSourceType.QUATERNION, new int[]{0, 1, 2}, new int[]{1, 1, 1});
+
+            }
+
+            streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientMSHRVPAccel.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientMSHRVPGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
+
+        } else if (dataSourceClientMSHRVAccel != null && dataSourceClientMSHRVGyro != null) {
+
+            if (PlatformId.RIGHT_WRIST.equals(platformId)) {
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, -1, 1});
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, -1, 1});
+            } else {
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1});
+                subscribeForThreeTupleHRVP(dataSourceClientMSHRVGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, 1, 1});
+
+            }
+
+            streamProcessorWrapper.streamProcessor.settingWristFrequencies(wrist, Double.parseDouble(dataSourceClientMSHRVPAccel.getDataSource().getMetadata().get(METADATA.FREQUENCY)), Double.parseDouble(dataSourceClientMSHRVPGyro.getDataSource().getMetadata().get(METADATA.FREQUENCY)));
 
         }
     }
@@ -500,7 +539,38 @@ public class DataKitManager {
                         csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]]);
                         csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]]);
                         csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]]);
-                    }
+                    } else if (DataSourceType.QUATERNION.equals(dataSourceId)) {
+                        /*
+                        delta_T = 1/F_s and
+
+                        theta_hat = 2*arccosine( Q_4)  / delta_T
+                        W_x =  Q_1/(sine( theta_hat * delta_T /2)  )*theta_hat
+
+                        W_y =  Q_2/(sine( theta_hat * delta_T /2)  )*theta_hat
+
+                        W_z =  Q_3/(sine( theta_hat * delta_T /2)  )*theta_hat,
+
+                         */
+                        double delta_T = 1/25.0;
+                        double Q_4 = 0.0;
+                        if (dataTypeDoubleArray.getSample().length == 4){
+                            Q_4 = dataTypeDoubleArray.getSample()[3];
+                        } else {
+                            Q_4 = Math.sqrt(1 - (dataTypeDoubleArray.getSample()[0]*dataTypeDoubleArray.getSample()[0]
+                                                 + dataTypeDoubleArray.getSample()[1]*dataTypeDoubleArray.getSample()[1]
+                                                 + dataTypeDoubleArray.getSample()[2]*dataTypeDoubleArray.getSample()[2]));
+                        }
+                        double theta_hat = 2* Math.acos(Q_4) / delta_T;
+                        double W_x = dataTypeDoubleArray.getSample()[0] / Math.sin(theta_hat * delta_T/2)*theta_hat;
+                        double W_y = dataTypeDoubleArray.getSample()[1] / Math.sin(theta_hat * delta_T/2)*theta_hat;
+                        double W_z = dataTypeDoubleArray.getSample()[2] / Math.sin(theta_hat * delta_T/2)*theta_hat;
+
+
+                        csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]]);
+                        csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]]);
+                        csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]]);
+                }
+
                     streamProcessorWrapper.addDataPoint(csvDataPointx);
                     streamProcessorWrapper.addDataPoint(csvDataPointy);
                     streamProcessorWrapper.addDataPoint(csvDataPointz);
@@ -511,6 +581,91 @@ public class DataKitManager {
         });
     }
 
+    private double[] rotateAxesCCW(double x, double y, double angle, double scalingFactor){
+        double[] rotated =  new double[2];
+        rotated[0] = (x * Math.cos(angle) + y * Math.sin(angle)) / scalingFactor;
+        rotated[1] = (y * Math.cos(angle) - x * Math.sin(angle)) / scalingFactor;
+        return rotated;
+    }
+
+    private void subscribeForThreeTupleHRVP(DataSourceClient dataSourceClient, final String platformId, final String dataSourceId, final int[] convertedAxis, final int[] convertedSign) throws DataKitException {
+        dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
+            @Override
+            public void onReceived(DataType dataType) {
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPointx = null;
+                    CSVDataPoint csvDataPointy = null;
+                    CSVDataPoint csvDataPointz = null;
+                    double accelScalingFactor = 1.0; //FIXME
+                    double gyroScalingFactor = 1.0;
+
+                    if (DataSourceType.ACCELEROMETER.equals(dataSourceId)) {
+                        double tmpX = convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]];
+                        double tmpY = convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]];
+                        double tmpZ = convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]];
+                        double[] rotated = rotateAxesCCW(tmpX, tmpY, -1*Math.PI/2 , accelScalingFactor); //FIXME - define 0.5 constant
+
+                        csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_X), dataTypeDoubleArray.getDateTime(),rotated[0]);
+                        csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Y), dataTypeDoubleArray.getDateTime(),rotated[1]);
+                        csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Z), dataTypeDoubleArray.getDateTime(),tmpZ);
+                    } else if (DataSourceType.GYROSCOPE.equals(dataSourceId)) {
+                        double tmpX = convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]];
+                        double tmpY = convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]];
+                        double tmpZ = convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]];
+                        double[] rotated = rotateAxesCCW(tmpX, tmpY, -1*Math.PI/2 , gyroScalingFactor);
+
+                        csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), rotated[0]);
+                        csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), rotated[1]);
+                        csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), tmpZ);
+                    } else if (DataSourceType.QUATERNION.equals(dataSourceId)) {
+                        /*
+                        delta_T = 1/F_s and
+
+                        theta_hat = 2*arccosine( Q_4)  / delta_T
+                        W_x =  Q_1/(sine( theta_hat * delta_T /2)  )*theta_hat
+
+                        W_y =  Q_2/(sine( theta_hat * delta_T /2)  )*theta_hat
+
+                        W_z =  Q_3/(sine( theta_hat * delta_T /2)  )*theta_hat,
+
+                         */
+                        double delta_T = 1/25.0; //FIXME - get this value from metadata
+                        double Q_4 = 0.0;
+                        if (dataTypeDoubleArray.getSample().length == 4){
+                            Q_4 = dataTypeDoubleArray.getSample()[3];
+                        } else {
+                            Q_4 = Math.sqrt(1 - (dataTypeDoubleArray.getSample()[0]*dataTypeDoubleArray.getSample()[0]
+                                    + dataTypeDoubleArray.getSample()[1]*dataTypeDoubleArray.getSample()[1]
+                                    + dataTypeDoubleArray.getSample()[2]*dataTypeDoubleArray.getSample()[2]));
+                        }
+                        double theta_hat = 2* Math.acos(Q_4) / delta_T;
+
+                        double tmpX = convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]];
+                        double tmpY = convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]];
+                        double tmpZ = convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]];
+
+                        double W_x = tmpX / Math.sin(theta_hat * delta_T/2)*theta_hat;
+                        double W_y = tmpY / Math.sin(theta_hat * delta_T/2)*theta_hat;
+                        double W_z = tmpZ / Math.sin(theta_hat * delta_T/2)*theta_hat;
+
+                        double[] rotated = rotateAxesCCW(W_x, W_y, Math.PI/2 , gyroScalingFactor);
+
+
+                        csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), rotated[0]);
+                        csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), rotated[1]);
+                        csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), W_z);
+                    }
+
+                    streamProcessorWrapper.addDataPoint(csvDataPointx);
+                    streamProcessorWrapper.addDataPoint(csvDataPointy);
+                    streamProcessorWrapper.addDataPoint(csvDataPointz);
+                } catch (Exception ignored) {
+
+                }
+            }
+        });
+    }
 
     public void unsubscribe(String platformType, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, dataSourceType);
