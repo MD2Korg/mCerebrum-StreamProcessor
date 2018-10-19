@@ -398,6 +398,9 @@ public class DataKitManager {
         DataSourceClient dataSourceClientMSAccel = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.ACCELEROMETER);
         DataSourceClient dataSourceClientMSGyro = findDataSourceClient(PlatformType.MOTION_SENSE, platformId, DataSourceType.GYROSCOPE);
 
+        DataSourceClient dataSourceClientMSHRVAccel = findDataSourceClient(PlatformType.MOTION_SENSE_HRV, platformId, DataSourceType.ACCELEROMETER);
+        DataSourceClient dataSourceClientMSHRVGyro = findDataSourceClient(PlatformType.MOTION_SENSE_HRV, platformId, DataSourceType.GYROSCOPE);
+
         DataSourceClient dataSourceClientMSHRVPAccel = findDataSourceClient(PlatformType.MOTION_SENSE_HRV_PLUS, platformId, DataSourceType.ACCELEROMETER);
         DataSourceClient dataSourceClientMSHRVPGyro = findDataSourceClient(PlatformType.MOTION_SENSE_HRV_PLUS, platformId, DataSourceType.QUATERNION);
 
@@ -419,7 +422,11 @@ public class DataKitManager {
             dataKitAPI.unsubscribe(dataSourceClientMSAccel);
             dataKitAPI.unsubscribe(dataSourceClientMSGyro);
 
-        } else if (dataSourceClientMSHRVPAccel != null && dataSourceClientMSHRVPGyro != null) {
+        } else if (dataSourceClientMSHRVAccel != null && dataSourceClientMSHRVGyro != null) {
+            dataKitAPI.unsubscribe(dataSourceClientMSHRVAccel);
+            dataKitAPI.unsubscribe(dataSourceClientMSHRVGyro);
+
+        }else if (dataSourceClientMSHRVPAccel != null && dataSourceClientMSHRVPGyro != null) {
             dataKitAPI.unsubscribe(dataSourceClientMSHRVPAccel);
             dataKitAPI.unsubscribe(dataSourceClientMSHRVPGyro);
 
