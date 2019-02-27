@@ -499,11 +499,11 @@ public class DataKitManager {
         } else if (dataSourceClientMSHRVAccel != null && dataSourceClientMSHRVGyro != null) {
 
             if (PlatformId.RIGHT_WRIST.equals(platformId)) {
-                subscribeForThreeTupleHRVP(dataSourceClientMSHRVAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, -1, 1});
-                subscribeForThreeTupleHRVP(dataSourceClientMSHRVGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, -1, 1});
+                subscribeForThreeTupleMSHRV(dataSourceClientMSHRVAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1}, PlatformId.RIGHT_WRIST);
+                subscribeForThreeTupleMSHRV(dataSourceClientMSHRVGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, 1, 1}, PlatformId.RIGHT_WRIST);
             } else {
-                subscribeForThreeTupleHRVP(dataSourceClientMSHRVAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1});
-                subscribeForThreeTupleHRVP(dataSourceClientMSHRVGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, 1, 1});
+                subscribeForThreeTupleMSHRV(dataSourceClientMSHRVAccel, platformId, DataSourceType.ACCELEROMETER, new int[]{0, 1, 2}, new int[]{1, 1, 1}, PlatformId.LEFT_WRIST);
+                subscribeForThreeTupleMSHRV(dataSourceClientMSHRVGyro, platformId, DataSourceType.GYROSCOPE, new int[]{0, 1, 2}, new int[]{1, 1, 1}, PlatformId.LEFT_WRIST);
 
             }
 
@@ -511,6 +511,70 @@ public class DataKitManager {
 
         }
     }
+
+    private void subscribeForThreeTupleMSHRV(DataSourceClient dataSourceClient, final String platformId, final String dataSourceId, final int[] convertedAxis, final int[] convertedSign, final String wrist) throws DataKitException {
+        dataKitAPI.subscribe(dataSourceClient, new OnReceiveListener() {
+            @Override
+            public void onReceived(DataType dataType) {
+                double accelScalingFactor = 1.0; //FIXME
+                double gyroScalingFactor = 1.0;
+                try {
+                    DataTypeDoubleArray dataTypeDoubleArray = (DataTypeDoubleArray) dataType;
+                    CSVDataPoint csvDataPointx = null;
+                    CSVDataPoint csvDataPointy = null;
+                    CSVDataPoint csvDataPointz = null;
+
+                    if (DataSourceType.ACCELEROMETER.equals(dataSourceId)) {
+
+                        double tmpX = convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]];
+                        double tmpY = convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]];
+                        double tmpZ = convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]];
+                        if(wrist.equals(PlatformId.LEFT_WRIST)) {
+                            //rotate by +90 degrees
+                            double[] rotated = rotateAxesCCW(tmpX, tmpY, Math.PI / 2, accelScalingFactor);
+                            csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_X), dataTypeDoubleArray.getDateTime(), rotated[0]);
+                            // Flip the y axis after rotation
+                            csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Y), dataTypeDoubleArray.getDateTime(), -1 * rotated[1]);
+                            csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Z), dataTypeDoubleArray.getDateTime(), tmpZ);
+                        } else if(wrist.equals(PlatformId.RIGHT_WRIST)) {
+                            //rotate by -90 degrees
+                            double[] rotated = rotateAxesCCW(tmpX, tmpY, -1 * Math.PI / 2, accelScalingFactor);
+                            // No need to flip any axes after rotation
+                            csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_X), dataTypeDoubleArray.getDateTime(), rotated[0]);
+                            csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Y), dataTypeDoubleArray.getDateTime(), rotated[1]);
+                            csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.ACCELEROMETER_Z), dataTypeDoubleArray.getDateTime(), tmpZ);
+                        }
+                    } else if (DataSourceType.GYROSCOPE.equals(dataSourceId)) {
+                        double tmpX = convertedSign[0] * dataTypeDoubleArray.getSample()[convertedAxis[0]];
+                        double tmpY = convertedSign[1] * dataTypeDoubleArray.getSample()[convertedAxis[1]];
+                        double tmpZ = convertedSign[2] * dataTypeDoubleArray.getSample()[convertedAxis[2]];
+
+                        if(wrist.equals(PlatformId.LEFT_WRIST)) {
+                            //rotate by +90 degrees
+                            double[] rotated = rotateAxesCCW(tmpX, tmpY, Math.PI / 2, gyroScalingFactor);
+                            csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), rotated[0]);
+                            // Flip the y axis after rotation
+                            csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), -1 * rotated[1]);
+                            csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), tmpZ);
+                        } else if(wrist.equals(PlatformId.RIGHT_WRIST)) {
+                            //rotate by -90 degrees
+                            double[] rotated = rotateAxesCCW(tmpX, tmpY, -1 * Math.PI / 2, gyroScalingFactor);
+                            // No need to flip any axes after rotation
+                            csvDataPointx = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_X), dataTypeDoubleArray.getDateTime(), rotated[0]);
+                            csvDataPointy = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Y), dataTypeDoubleArray.getDateTime(), rotated[1]);
+                            csvDataPointz = new CSVDataPoint(dataSourceTypeTOChannel.get(platformId + "_" + DataSourceType.GYROSCOPE_Z), dataTypeDoubleArray.getDateTime(), tmpZ);
+                        }
+                    }
+                    streamProcessorWrapper.addDataPoint(csvDataPointx);
+                    streamProcessorWrapper.addDataPoint(csvDataPointy);
+                    streamProcessorWrapper.addDataPoint(csvDataPointz);
+                } catch (Exception ignored) {
+
+                }
+            }
+        });
+    }
+
 
     private void subscribe(String platformType, final String platformId, final String dataSourceType) throws DataKitException {
         DataSourceClient dataSourceClient = findDataSourceClient(platformType, platformId, dataSourceType);
